@@ -1,48 +1,88 @@
-import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+} from "react";
 
-export type Role = "POPULATION" | "CHAUFFEUR" | "ADMIN_BUS" | "ADMIN_TRASH";
+export type Role =
+  | "POPULATION"
+  | "CHAUFFEUR"
+  | "ADMIN_BUS"
+  | "ADMIN_TRASH";
 
-interface AuthState {
+interface AuthContextType {
   role: Role | null;
+
   email: string | null;
-  setRole: (r: Role, email: string) => void;
+
+  setRole: (
+    role: Role,
+    email: string
+  ) => void;
+
   logout: () => void;
 }
 
-const AuthCtx = createContext<AuthState | null>(null);
+const AuthContext =
+  createContext<AuthContextType | null>(
+    null
+  );
 
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [role, setRoleState] = useState<Role | null>(null);
-  const [email, setEmail] = useState<string | null>(null);
+export function AuthProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const [role, setRoleState] =
+    useState<Role | null>(null);
 
-  useEffect(() => {
-    const saved = typeof window !== "undefined" ? localStorage.getItem("fianacity_auth") : null;
-    if (saved) {
-      try {
-        const p = JSON.parse(saved);
-        setRoleState(p.role);
-        setEmail(p.email);
-      } catch {}
-    }
-  }, []);
+  const [email, setEmail] =
+    useState<string | null>(null);
 
-  const setRole = (r: Role, e: string) => {
-    setRoleState(r);
-    setEmail(e);
-    localStorage.setItem("fianacity_auth", JSON.stringify({ role: r, email: e }));
+  const setRole = (
+    role: Role,
+    email: string
+  ) => {
+    setRoleState(role);
+    setEmail(email);
   };
 
   const logout = () => {
     setRoleState(null);
     setEmail(null);
-    localStorage.removeItem("fianacity_auth");
+
+    localStorage.removeItem(
+      "access_token"
+    );
+
+    localStorage.removeItem(
+      "refresh_token"
+    );
   };
 
-  return <AuthCtx.Provider value={{ role, email, setRole, logout }}>{children}</AuthCtx.Provider>;
+  return (
+    <AuthContext.Provider
+      value={{
+        role,
+        email,
+        setRole,
+        logout,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {
-  const ctx = useContext(AuthCtx);
-  if (!ctx) throw new Error("useAuth must be used within AuthProvider");
-  return ctx;
+  const context =
+    useContext(AuthContext);
+
+  if (!context) {
+    throw new Error(
+      "useAuth must be used inside AuthProvider"
+    );
+  }
+
+  return context;
 }
