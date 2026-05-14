@@ -9,10 +9,15 @@ import {
 } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './modules/auth/auth.module';
+import { LocalisationModule } from './modules/localisation/localisation.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }),
-    AuthModule,UserModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    AuthModule,
+    UserModule,
+    LocalisationModule
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
