@@ -16,6 +16,7 @@ import { PopulationModule } from './modules/population/population.module';
 import { DriverModule } from './modules/driver/driver.module';
 import { BusModule } from './modules/bus/bus.module';
 import { LineModule } from './modules/line/line.module';
+import { StopModule } from './modules/stop/stop.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -28,6 +29,7 @@ import { LineModule } from './modules/line/line.module';
     DriverModule,
     BusModule,
     LineModule,
+    StopModule,
   ],
   controllers: [AppController],
   providers: [AppService],
