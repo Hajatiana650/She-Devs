@@ -11,14 +11,15 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './modules/auth/auth.module';
 import { LocalisationModule } from './modules/localisation/localisation.module';
 import { QuarterModule } from './modules/quarter/quarter.module';
-
+import { AdminModule } from './modules/admin/admin.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     AuthModule,
     QuarterModule,
     UserModule,
-    LocalisationModule
+    LocalisationModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],
