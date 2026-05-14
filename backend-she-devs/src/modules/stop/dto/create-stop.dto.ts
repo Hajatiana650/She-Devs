@@ -1,5 +1,10 @@
-import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber, IsEnum, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+
+export enum DirectionEnum {
+  ALLER = 'ALLER',
+  RETOUR = 'RETOUR',
+}
 
 export class CreateStopDto {
   @ApiProperty({
@@ -12,11 +17,21 @@ export class CreateStopDto {
 
   @ApiProperty({
     example: 'Gare Centrale',
-    description: 'Nom unique du stop',
+    description: 'Nom du stop',
   })
   @IsNotEmpty({ message: 'name_stop is required' })
   @IsString({ message: 'name_stop must be a string' })
   name_stop!: string;
+
+  @ApiProperty({
+    enum: DirectionEnum,
+    example: 'ALLER',
+    description: 'Direction: ALLER ou RETOUR',
+    required: false,
+  })
+  @IsOptional()
+  @IsEnum(DirectionEnum, { message: 'direction must be ALLER or RETOUR' })
+  direction?: DirectionEnum;
 
   @ApiProperty({
     example: 1,

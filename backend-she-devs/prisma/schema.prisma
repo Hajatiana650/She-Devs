@@ -95,6 +95,11 @@ model Line {
   stops Stop[]
 }
 
+enum Direction {
+  ALLER
+  RETOUR
+}
+
 model Bus {
   id_bus     Int     @id @default(autoincrement())
   matricule  String  @unique
@@ -106,15 +111,40 @@ model Bus {
   id_localisation Int
   localisation    Localisation @relation(fields: [id_localisation], references: [id_localisation])
 
-visitInsurances   VisitInsurance[]
+  transportSessions TransportSession[]
+  visitInsurances   VisitInsurance[]
   driver Driver?
+}
+
+enum SessionStatus {
+  WAITING
+  ACTIVE
+  FINISHED
+  CANCELLED
+}
+
+model TransportSession {
+  id_session Int @id @default(autoincrement())
+
+  start_time DateTime
+  end_time   DateTime?
+
+  direction Direction
+
+  status SessionStatus @default(WAITING)
+
+  id_bus Int
+  bus    Bus @relation(fields: [id_bus], references: [id_bus])
+
+  createdAt DateTime @default(now())
 }
 
 
 model Stop {
-  id_stop    Int    @id @default(autoincrement())
+  id_stop    Int       @id @default(autoincrement())
   order_stop Int
   name_stop  String
+  direction  Direction @default(ALLER)
 
   id_line Int
   line    Line @relation(fields: [id_line], references: [id_line])
