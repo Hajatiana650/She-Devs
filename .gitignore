@@ -115,3 +115,5 @@ coverage/
 # =====================
 
 generated/prisma/
+
+/generated/prisma
