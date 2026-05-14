@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Plus, AlertTriangle } from "lucide-react";
+import { Plus, AlertTriangle, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -35,110 +35,175 @@ function BusManagement() {
   const inapteCount = BUSES.filter((b) => b.fitness === "INAPTE").length;
 
   return (
-    <div className="space-y-4 p-4 md:p-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Gestion des bus</h1>
+    <div className="space-y-6 p-4 md:p-8 max-w-7xl mx-auto fade-in-up">
+      {/* Header avec un titre digne de ce nom */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b pb-5">
+        <div>
+          <h1 className="text-3xl font-extrabold tracking-tight text-gradient-brand">
+            Gestion des flottes de bus
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Supervisez les contrôles techniques avant que vos chauffeurs ne se transforment en cascadeurs.
+          </p>
+        </div>
+        
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-bus hover:bg-bus/90"><Plus size={16} /> Nouvelle visite</Button>
+            <Button className="bg-gradient-brand text-white shadow-glow transition-all duration-300 hover:scale-[1.02] hover:opacity-95 active:scale-[0.98]">
+              <Plus className="mr-2" size={18} /> Nouvelle visite
+            </Button>
           </DialogTrigger>
-          <DialogContent>
-            <DialogHeader><DialogTitle>Enregistrer une visite technique</DialogTitle></DialogHeader>
-            <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); setOpen(false); toast.success("Visite enregistrée"); }}>
+          <DialogContent className="sm:max-w-[500px] backdrop-blur-md bg-card/95 raw-shadow">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-bold tracking-tight">
+                Enregistrer une visite technique
+              </DialogTitle>
+            </DialogHeader>
+            <form 
+              className="space-y-5 mt-2" 
+              onSubmit={(e) => { 
+                e.preventDefault(); 
+                setOpen(false); 
+                toast.success("Visite enregistrée. Miraculeusement, aucun pot d'échappement n'est tombé."); 
+              }}
+            >
               <div className="space-y-2">
-                <Label>Sélectionner bus</Label>
-                <Select defaultValue={BUSES[0].id}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                <Label className="font-medium text-xs uppercase tracking-wider text-muted-foreground">Sélectionner un véhicule</Label>
+                <Select defaultValue={BUSES[0]?.id}>
+                  <SelectTrigger className="bg-background/50 focus:ring-secondary"><SelectValue /></SelectTrigger>
                   <SelectContent>
                     {BUSES.map((b) => <SelectItem key={b.id} value={b.id}>{b.matricule}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label>Date visite</Label>
-                  <Input type="date" defaultValue="2026-05-14" />
+                  <Label className="font-medium text-xs uppercase tracking-wider text-muted-foreground">Date visite</Label>
+                  <Input type="date" defaultValue="2026-05-14" className="bg-background/50" />
                 </div>
                 <div className="space-y-2">
-                  <Label>Expiration</Label>
-                  <Input type="date" defaultValue="2027-05-14" />
+                  <Label className="font-medium text-xs uppercase tracking-wider text-muted-foreground">Expiration</Label>
+                  <Input type="date" defaultValue="2027-05-14" className="bg-background/50" />
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label>Résultat</Label>
-                <RadioGroup defaultValue="apte" className="flex gap-6">
-                  <div className="flex items-center gap-2"><RadioGroupItem value="apte" id="r-apte" /><Label htmlFor="r-apte">APTE</Label></div>
-                  <div className="flex items-center gap-2"><RadioGroupItem value="inapte" id="r-inapte" /><Label htmlFor="r-inapte">INAPTE</Label></div>
+              <div className="space-y-2 bg-muted/40 p-3 rounded-lg border">
+                <Label className="font-medium text-xs uppercase tracking-wider text-muted-foreground block mb-2">Verdict final</Label>
+                <RadioGroup defaultValue="apte" className="flex gap-8">
+                  <div className="flex items-center gap-2 cursor-pointer">
+                    <RadioGroupItem value="apte" id="r-apte" className="text-success border-success" />
+                    <Label htmlFor="r-apte" className="font-semibold text-success cursor-pointer text-sm">APTE TOUT VA BIEN</Label>
+                  </div>
+                  <div className="flex items-center gap-2 cursor-pointer">
+                    <RadioGroupItem value="inapte" id="r-inapte" className="text-destructive border-destructive" />
+                    <Label htmlFor="r-inapte" className="font-semibold text-destructive cursor-pointer text-sm">INAPTE (ÉPAVE)</Label>
+                  </div>
                 </RadioGroup>
               </div>
               <div className="space-y-2">
-                <Label>Observations</Label>
-                <Textarea rows={3} placeholder="Notes du contrôleur..." />
+                <Label className="font-medium text-xs uppercase tracking-wider text-muted-foreground">Observations honnêtes</Label>
+                <Textarea rows={2} placeholder="Sifflement suspect dans le moteur..." className="bg-background/50 resize-none" />
               </div>
               <div className="space-y-2">
-                <Label>Photo du contrôle</Label>
-                <div className="flex h-24 items-center justify-center rounded-md border-2 border-dashed text-sm text-muted-foreground">
-                  Glissez une photo ici
+                <Label className="font-medium text-xs uppercase tracking-wider text-muted-foreground">Preuve visuelle des dégâts</Label>
+                <div className="flex h-24 items-center justify-center rounded-xl border-2 border-dashed border-border hover:border-secondary/50 transition-colors cursor-pointer text-xs text-muted-foreground bg-muted/20">
+                  Glissez-déposez le désastre ici
                 </div>
               </div>
-              <Button type="submit" className="w-full bg-bus">Enregistrer la visite</Button>
+              <Button type="submit" className="w-full bg-gradient-brand text-white font-medium shadow-sm transition-all">
+                Valider et prier pour les freins
+              </Button>
             </form>
           </DialogContent>
         </Dialog>
       </div>
 
+      {/* Alerte Dramatique */}
       {inapteCount > 0 && (
-        <div className="flex items-start gap-3 rounded-lg border border-status-danger/30 bg-status-danger/10 p-4 text-sm">
-          <AlertTriangle className="text-status-danger" size={20} />
+        <div className="flex items-start gap-3 rounded-xl border border-destructive/20 bg-destructive/5 p-4 text-sm text-destructive shadow-soft animate-pulse-ring">
+          <AlertTriangle className="shrink-0 mt-0.5" size={18} />
           <div>
-            <strong>{inapteCount} bus retiré(s) de la circulation.</strong> Les chauffeurs concernés ont été notifiés.
+            <span className="font-bold">{inapteCount} bus déclaré(s) impropre(s) à la consommation routière.</span> Les chauffeurs ont été notifiés (et pleurent probablement).
           </div>
         </div>
       )}
 
-      <Tabs value={filter} onValueChange={setFilter}>
-        <TabsList>
-          <TabsTrigger value="all">Tous ({BUSES.length})</TabsTrigger>
-          <TabsTrigger value="aptes">Aptes</TabsTrigger>
-          <TabsTrigger value="inaptes">Inaptes</TabsTrigger>
-          <TabsTrigger value="soon">Visites à venir</TabsTrigger>
+      {/* Onglets épurés */}
+      <Tabs value={filter} onValueChange={setFilter} className="w-full">
+        <TabsList className="bg-muted/60 p-1 rounded-xl border">
+          <TabsTrigger value="all" className="rounded-lg px-4 py-2 text-xs font-semibold">Tous ({BUSES.length})</TabsTrigger>
+          <TabsTrigger value="aptes" className="rounded-lg px-4 py-2 text-xs font-semibold data-[state=active]:text-success">Aptes</TabsTrigger>
+          <TabsTrigger value="inaptes" className="rounded-lg px-4 py-2 text-xs font-semibold data-[state=active]:text-destructive">Inaptes</TabsTrigger>
+          <TabsTrigger value="soon" className="rounded-lg px-4 py-2 text-xs font-semibold data-[state=active]:text-secondary">Visites à venir</TabsTrigger>
         </TabsList>
       </Tabs>
 
-      <div className="overflow-x-auto rounded-xl border bg-card">
+      {/* Tableau Haut de Gamme avec effet Glassmorphic/Cards */}
+      <div className="overflow-hidden rounded-xl border bg-card shadow-soft transition-all duration-300">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-muted/30">
             <TableRow>
-              <TableHead>Matricule</TableHead>
-              <TableHead>Ligne</TableHead>
-              <TableHead>Chauffeur</TableHead>
-              <TableHead>Statut</TableHead>
-              <TableHead>Dernière visite</TableHead>
-              <TableHead>Expiration</TableHead>
-              <TableHead>Actions</TableHead>
+              <TableHead className="font-bold text-xs uppercase tracking-wider text-muted-foreground">Matricule</TableHead>
+              <TableHead className="font-bold text-xs uppercase tracking-wider text-muted-foreground">Ligne</TableHead>
+              <TableHead className="font-bold text-xs uppercase tracking-wider text-muted-foreground">Chauffeur courageux</TableHead>
+              <TableHead className="font-bold text-xs uppercase tracking-wider text-muted-foreground">Verdict</TableHead>
+              <TableHead className="font-bold text-xs uppercase tracking-wider text-muted-foreground">Dernier check</TableHead>
+              <TableHead className="font-bold text-xs uppercase tracking-wider text-muted-foreground">Fin de validité</TableHead>
+              <TableHead className="font-right text-xs uppercase tracking-wider text-muted-foreground text-right pr-6">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filtered.map((b) => {
-              const line = BUS_LINES.find((l) => l.id === b.ligneId);
-              return (
-                <TableRow key={b.id}>
-                  <TableCell className="font-medium">{b.matricule}</TableCell>
-                  <TableCell>L{line?.number}</TableCell>
-                  <TableCell>{b.chauffeur}</TableCell>
-                  <TableCell>
-                    <Badge className={b.fitness === "APTE" ? "bg-status-success text-white" : "bg-status-danger text-white"}>
-                      {b.fitness}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-sm">{b.lastVisit}</TableCell>
-                  <TableCell className="text-sm">{b.expirationDate}</TableCell>
-                  <TableCell>
-                    <Button variant="ghost" size="sm">Voir</Button>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
+            {filtered.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={7} className="text-center py-10 text-muted-foreground italic">
+                  Aucun bus ne correspond. Tout le monde est au dépôt.
+                </TableCell>
+              </TableRow>
+            ) : (
+              filtered.map((b, index) => {
+                const line = BUS_LINES.find((l) => l.id === b.ligneId);
+                const isApte = b.fitness === "APTE";
+                return (
+                  <TableRow 
+                    key={b.id} 
+                    className="hover:bg-muted/20 transition-colors duration-150 group border-b"
+                    style={{ animationDelay: `${index * 40}ms` }}
+                  >
+                    <TableCell className="font-mono font-bold tracking-tight text-foreground">{b.matricule}</TableCell>
+                    <TableCell>
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-secondary/10 text-secondary border border-secondary/20">
+                        Ligne {line?.number || "?"}
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+                      {b.chauffeur}
+                    </TableCell>
+                    <TableCell>
+                      <Badge 
+                        variant="outline"
+                        className={`font-semibold text-xs tracking-wide px-2.5 py-0.5 rounded-full ${
+                          isApte 
+                            ? "bg-success/10 text-success border-success/30" 
+                            : "bg-destructive/10 text-destructive border-destructive/30 animate-pulse"
+                        }`}
+                      >
+                        {b.fitness}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-sm font-mono text-muted-foreground">{b.lastVisit}</TableCell>
+                    <TableCell className="text-sm font-mono text-muted-foreground">{b.expirationDate}</TableCell>
+                    <TableCell className="text-right pr-6">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-8 w-8 p-0 opacity-60 group-hover:opacity-100 hover:bg-secondary/10 hover:text-secondary rounded-lg transition-all"
+                      >
+                        <Eye size={15} />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })
+            )}
           </TableBody>
         </Table>
       </div>
