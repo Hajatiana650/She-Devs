@@ -17,6 +17,7 @@ import { DriverModule } from './modules/driver/driver.module';
 import { BusModule } from './modules/bus/bus.module';
 import { LineModule } from './modules/line/line.module';
 import { StopModule } from './modules/stop/stop.module';
+import { VisitModule } from './modules/visit/visit.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -30,6 +31,7 @@ import { StopModule } from './modules/stop/stop.module';
     BusModule,
     LineModule,
     StopModule,
+    VisitModule,
   ],
   controllers: [AppController],
   providers: [AppService],
