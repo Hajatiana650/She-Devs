@@ -14,6 +14,7 @@ import { QuarterModule } from './modules/quarter/quarter.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { PopulationModule } from './modules/population/population.module';
 import { DriverModule } from './modules/driver/driver.module';
+import { BusModule } from './modules/bus/bus.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -24,6 +25,7 @@ import { DriverModule } from './modules/driver/driver.module';
     AdminModule,
     PopulationModule,
     DriverModule,
+    BusModule,
   ],
   controllers: [AppController],
   providers: [AppService],
