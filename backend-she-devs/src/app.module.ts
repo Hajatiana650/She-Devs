@@ -9,10 +9,28 @@ import {
 } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './modules/auth/auth.module';
-
+import { LocalisationModule } from './modules/localisation/localisation.module';
+import { QuarterModule } from './modules/quarter/quarter.module';
+import { AdminModule } from './modules/admin/admin.module';
+import { PopulationModule } from './modules/population/population.module';
+import { DriverModule } from './modules/driver/driver.module';
+import { BusModule } from './modules/bus/bus.module';
+import { LineModule } from './modules/line/line.module';
+import { StopModule } from './modules/stop/stop.module';
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }),
-    AuthModule,UserModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    AuthModule,
+    QuarterModule,
+    UserModule,
+    LocalisationModule,
+    AdminModule,
+    PopulationModule,
+    DriverModule,
+    BusModule,
+    LineModule,
+    StopModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -1,26 +1,57 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAdminDto } from './dto/create-admin.dto';
-import { UpdateAdminDto } from './dto/update-admin.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { UserService } from '../user/user.service';
+import { CreateAdminUserDto } from './dto/create-admin.dto';
 
 @Injectable()
 export class AdminService {
-  create(createAdminDto: CreateAdminDto) {
-    return 'This action adds a new admin';
+  constructor(
+    private prisma: PrismaService,
+    private userService: UserService,
+  ) {}
+
+  async createAdminUser(createAdminUserDto: CreateAdminUserDto) {
+    // Créer l'utilisateur via UserService
+    const userResponse = await this.userService.createUser({
+      user_name: createAdminUserDto.user_name,
+      email: createAdminUserDto.email,
+      password: createAdminUserDto.password,
+    } as any);
+
+    // Extraire les données du user du wrapper
+    const user = userResponse?.data || userResponse;
+    if (!user?.id_user) {
+      throw new Error('Failed to create user');
+    }
+
+    // Créer l'admin associé au user
+    const admin = await this.prisma.admin.create({
+      data: {
+        rolee: createAdminUserDto.rolee as any,
+        id_user: user.id_user,
+      },
+      include: { user: true },
+    });
+
+    return admin;
   }
 
-  findAll() {
-    return `This action returns all admin`;
+  async findAll() {
+    return this.prisma.admin.findMany({
+      include: { user: true },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} admin`;
-  }
+  async findOne(id: number) {
+    const admin = await this.prisma.admin.findUnique({
+      where: { id_admin: id },
+      include: { user: true },
+    });
 
-  update(id: number, updateAdminDto: UpdateAdminDto) {
-    return `This action updates a #${id} admin`;
-  }
+    if (!admin) {
+      throw new NotFoundException(`Admin with id ${id} not found`);
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} admin`;
+    return admin;
   }
 }

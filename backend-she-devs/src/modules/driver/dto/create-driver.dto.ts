@@ -1,22 +1,16 @@
-import { IsNotEmpty, IsEmail, MinLength, IsEnum } from 'class-validator';
+import { IsNotEmpty, IsEmail, MinLength, IsNumber } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-enum RoleeEnum {
-  BUS = 'BUS',
-  TRASH = 'TRASH',
-  OTHERS = 'OTHERS',
-}
-
-export class CreateAdminUserDto {
+export class CreateDriverUserDto {
   @ApiProperty({
-    example: 'admin.bus',
+    example: 'driver.bus01',
     description: 'Nom d\'utilisateur unique',
   })
   @IsNotEmpty({ message: 'user_name is required' })
   user_name!: string;
 
   @ApiProperty({
-    example: 'admin@gmail.com',
+    example: 'driver@gmail.com',
     description: 'Email unique',
   })
   @IsNotEmpty({ message: 'email is required' })
@@ -24,7 +18,7 @@ export class CreateAdminUserDto {
   email!: string;
 
   @ApiProperty({
-    example: 'AdminPassword123@',
+    example: 'DriverPass123@',
     description: 'Mot de passe (minimum 6 caractères)',
   })
   @IsNotEmpty({ message: 'password is required' })
@@ -32,11 +26,10 @@ export class CreateAdminUserDto {
   password!: string;
 
   @ApiProperty({
-    example: 'BUS',
-    enum: ['BUS', 'TRASH', 'OTHERS'],
-    description: 'Rôle de l\'administrateur',
+    example: 1,
+    description: 'ID du bus',
   })
-  @IsNotEmpty({ message: 'rolee is required' })
-  @IsEnum(RoleeEnum, { message: 'rolee must be one of: BUS, TRASH, OTHERS' })
-  rolee!: string;
+  @IsNotEmpty({ message: 'id_bus is required' })
+  @IsNumber({}, { message: 'id_bus must be a number' })
+  id_bus!: number;
 }
