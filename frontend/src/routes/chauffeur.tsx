@@ -1,11 +1,5 @@
-import {
-  createFileRoute,
-  Outlet,
-  Link,
-  useRouterState,
-  useNavigate,
-} from "@tanstack/react-router";
-import { Bus, ShieldCheck, User, LogOut, Sparkles, Sparkles } from "lucide-react";
+import { createFileRoute, Outlet, Link, useRouterState, useNavigate } from "@tanstack/react-router";
+import { Bus, ShieldCheck, User, LogOut, Sparkles } from "lucide-react";
 import { useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -23,34 +17,10 @@ const items = [
 function ChauffeurLayout() {
   const { role, logout } = useAuth();
   const navigate = useNavigate();
+  useEffect(() => { if (!role) navigate({ to: "/login" }); }, [role, navigate]);
   const path = useRouterState({ select: (s) => s.location.pathname });
 
-  useEffect(() => {
-    if (!role) navigate({ to: "/login" });
-  }, [role, navigate]);
-
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-[#ecfffb] via-[#eef6ff] to-[#f5f3ff]">
-      
-      {/* SIDEBAR DESKTOP MODERNE */}
-      <aside className="hidden w-80 flex-col rounded-r-[40px] border-r border-[#3BC1A8]/15 bg-white/95 shadow-[0_30px_80px_rgba(59,193,168,0.14)] backdrop-blur-xl md:flex">
-        <div className="border-b border-[#3BC1A8]/10 px-6 py-6">
-          <div className="flex items-center gap-4">
-            <div className="relative flex h-14 w-14 items-center justify-center rounded-3xl bg-gradient-to-br from-[#3BC1A8] via-[#33b7ad] to-[#2f99c3] shadow-lg shadow-[#3BC1A8]/25">
-              <Sparkles className="text-white" size={22} />
-              <div className="absolute inset-0 rounded-3xl bg-white/10" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-semibold text-slate-900">FianaCity</h1>
-              <p className="mt-1 text-sm text-slate-500">Espace chauffeur</p>
-            </div>
-          </div>
-          <div className="mt-6 rounded-[28px] bg-[#3BC1A8]/5 p-4 text-sm text-[#0f766e] shadow-inner shadow-[#3BC1A8]/10">
-            <p className="font-medium">Bienvenue chauffeur</p>
-            <p className="mt-2 text-xs leading-5 text-slate-500">
-              Accédez rapidement à votre bus, assurance et profil.
-            </p>
-          </div>
     <div className="flex min-h-screen bg-gradient-to-br from-[#ecfffb] via-[#eef6ff] to-[#f5f3ff]">
       {/* Desktop Sidebar */}
       <aside className="hidden w-64 flex-col border-r border-white/20 bg-white/10 backdrop-blur-md md:flex">
@@ -67,7 +37,6 @@ function ChauffeurLayout() {
           {items.map((it) => {
             const active = path.startsWith(it.to);
             const Icon = it.icon;
-
             return (
               <Link 
                 key={it.to} 
@@ -129,10 +98,7 @@ function ChauffeurLayout() {
             );
           })}
         </nav>
-
-        <main className="flex-1">
-          <Outlet />
-        </main>
+        <main className="flex-1"><Outlet /></main>
       </div>
 
       <main className="hidden flex-1 flex-col md:flex"><Outlet /></main>
