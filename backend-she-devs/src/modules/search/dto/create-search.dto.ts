@@ -9,7 +9,7 @@ export enum DirectionDto {
 export class CreateSearchDto {
   @ApiProperty({
     example: 1,
-    description: 'ID de la ligne (ou laisser vide et utiliser id_stop_depart/id_stop_arrivee)',
+    description: 'ID de la ligne (Cas 1 & 5). Optionnel si id_stop_depart+id_stop_arrivee fournis.',
     required: false,
   })
   @IsOptional()
@@ -18,7 +18,7 @@ export class CreateSearchDto {
 
   @ApiProperty({
     example: 1,
-    description: 'ID de l\'arrêt de départ',
+    description: 'ID arrêt départ (Cas 2, 3, 6, 7). Optionnel si id_line fourni. Pour ALLER: order_stop(départ) < order_stop(arrivée). Pour RETOUR: order_stop(départ) > order_stop(arrivée).',
     required: false,
   })
   @IsOptional()
@@ -26,8 +26,9 @@ export class CreateSearchDto {
   id_stop_depart?: number;
 
   @ApiProperty({
-    example: 5,
-    description: 'ID de l\'arrêt d\'arrivée',
+    example: 3,
+    description: 'ID arrêt arrivée (REQUIS dans tous les cas). Doit être sur la même ligne que id_stop_depart s\'il est fourni.',
+    required: true,
   })
   @IsNotEmpty({ message: 'id_stop_arrivee is required' })
   @IsNumber({}, { message: 'id_stop_arrivee must be a number' })
@@ -36,7 +37,7 @@ export class CreateSearchDto {
   @ApiProperty({
     enum: DirectionDto,
     example: 'ALLER',
-    description: 'Direction: ALLER ou RETOUR (ALLER par défaut)',
+    description: 'ALLER (matin, défaut) ou RETOUR (soir). Optionnel, devient ALLER par défaut (Cas 7).',
     required: false,
   })
   @IsOptional()
@@ -45,7 +46,7 @@ export class CreateSearchDto {
 
   @ApiProperty({
     example: '2026-05-14T10:30:00Z',
-    description: 'Heure d\'arrivée souhaitée (optionnel, ISO 8601)',
+    description: 'Heure ISO 8601 souhaitée (Cas 4 & 5). Optionnel. Format: "2026-05-14T10:30:00Z".',
     required: false,
   })
   @IsOptional()
