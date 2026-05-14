@@ -12,6 +12,8 @@ import { AuthModule } from './modules/auth/auth.module';
 import { LocalisationModule } from './modules/localisation/localisation.module';
 import { QuarterModule } from './modules/quarter/quarter.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { PopulationModule } from './modules/population/population.module';
+import { DriverModule } from './modules/driver/driver.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -20,6 +22,8 @@ import { AdminModule } from './modules/admin/admin.module';
     UserModule,
     LocalisationModule,
     AdminModule,
+    PopulationModule,
+    DriverModule,
   ],
   controllers: [AppController],
   providers: [AppService],
