@@ -1,0 +1,177 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+model Localisation {
+  id_localisation Int     @id @default(autoincrement())
+  longitude       Float
+  latitude        Float
+
+  quarters    Quarter[]
+  populations Population[]
+  buses       Bus[]
+  stops       Stop[]
+}
+
+
+model Quarter {
+  id_quarter   Int    @id @default(autoincrement())
+  quarter_name String
+
+  id_localisation Int
+  localisation    Localisation @relation(fields: [id_localisation], references: [id_localisation])
+
+  populations Population[]
+  signals     Signal[]
+  notices     Notice[]
+  collects    Collect[]
+}
+
+
+model User {
+  id_user   Int    @id @default(autoincrement())
+  user_name String @unique
+  password  String
+  email     String @unique
+
+  admin      Admin?
+  population Population?
+  driver     Driver?
+}
+
+
+enum RoleeEnum {
+  BUS
+  TRASH
+  OTHERS
+}
+
+model Admin {
+  id_admin Int       @id @default(autoincrement())
+  rolee    RoleeEnum
+
+  id_user Int  @unique
+  user    User @relation(fields: [id_user], references: [id_user])
+}
+
+
+model Population {
+  id_population Int @id @default(autoincrement())
+
+  id_user Int  @unique
+  user    User @relation(fields: [id_user], references: [id_user])
+
+  id_quarter Int
+  quarter    Quarter @relation(fields: [id_quarter], references: [id_quarter])
+
+  id_localisation Int
+  localisation    Localisation @relation(fields: [id_localisation], references: [id_localisation])
+
+  signals Signal[]
+}
+
+model Driver {
+  id_driver Int @id @default(autoincrement())
+
+  id_user Int  @unique
+  user    User @relation(fields: [id_user], references: [id_user])
+
+  id_bus Int  @unique
+  bus    Bus  @relation(fields: [id_bus], references: [id_bus])
+}
+
+// ============================================================
+// LINE
+// ============================================================
+
+model Line {
+  id_line Int    @id @default(autoincrement())
+  nb_line String @unique
+
+  buses Bus[]
+  stops Stop[]
+}
+
+// ============================================================
+// BUS
+// ============================================================
+
+model Bus {
+  id_bus     Int     @id @default(autoincrement())
+  matricule  String  @unique
+  bus_status Boolean // true = apte, false = inapte
+
+  id_line Int
+  line    Line @relation(fields: [id_line], references: [id_line])
+
+  id_localisation Int
+  localisation    Localisation @relation(fields: [id_localisation], references: [id_localisation])
+
+  driver Driver?
+}
+
+// ============================================================
+// STOP
+// ============================================================
+
+model Stop {
+  id_stop    Int    @id @default(autoincrement())
+  order_stop Int
+  name_stop  String
+
+  id_line Int
+  line    Line @relation(fields: [id_line], references: [id_line])
+
+  id_localisation Int
+  localisation    Localisation @relation(fields: [id_localisation], references: [id_localisation])
+}
+
+// ============================================================
+// SIGNAL
+// ============================================================
+
+model Signal {
+  id_signal     Int     @id @default(autoincrement())
+  photo         String
+  description   String
+  signal_status Boolean // true = traité, false = en attente
+
+  id_population Int
+  population    Population @relation(fields: [id_population], references: [id_population])
+
+  id_quarter Int
+  quarter    Quarter @relation(fields: [id_quarter], references: [id_quarter])
+}
+
+// ============================================================
+// NOTICE
+// ============================================================
+
+model Notice {
+  id_notice   Int      @id @default(autoincrement())
+  title       String
+  description String
+  content     String
+  date_notice DateTime @default(now())
+
+  id_quarter Int
+  quarter    Quarter @relation(fields: [id_quarter], references: [id_quarter])
+}
+
+// ============================================================
+// COLLECT
+// ============================================================
+
+model Collect {
+  id_collect   Int      @id @default(autoincrement())
+  date_collect DateTime
+
+  id_quarter Int
+  quarter    Quarter @relation(fields: [id_quarter], references: [id_quarter])
+}
