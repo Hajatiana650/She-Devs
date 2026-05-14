@@ -120,4 +120,6 @@ export const CAMPAIGNS: Campaign[] = [
 export const CURRENT_USER = {
   name: "Hanitra Razafy",
   email: "hanitra@example.mg",
+  avatar: "https://images.unsplash.com/photo-1603415526960-f8f6e4ee1b2a?auto=format&fit=crop&w=200&q=80",
+  image: "https://images.unsplash.com/photo-1603415526960-f8f6e4ee1b2a?auto=format&fit=crop&w=400&q=80",
 };
