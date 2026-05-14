@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from '../user/user.service';
 import { CreateDriverUserDto } from './dto/create-driver.dto';
+import { DriverListDto } from './dto/driver-list.dto';
 
 @Injectable()
 export class DriverService {
@@ -73,5 +74,33 @@ export class DriverService {
     }
 
     return driver;
+  }
+
+  async getDriverList(): Promise<any> {
+    try {
+      const drivers = await this.prisma.driver.findMany({
+        include: {
+          user: true,
+          bus: true,
+        },
+      });
+
+      const driverList: DriverListDto[] = drivers.map((driver) => ({
+        nom: driver.user.user_name,
+        telephone: `+261 34 12 345 ${67 + driver.id_driver}`, // Simulation numéro téléphone
+        busAssigne: driver.bus.matricule,
+        statutBus: driver.bus.bus_status ? 'APTE' : 'INAPTE',
+        idDriver: driver.id_driver,
+        idBus: driver.id_bus,
+      }));
+
+      return {
+        statusCode: 200,
+        message: 'Driver list retrieved successfully',
+        data: driverList,
+      };
+    } catch (error) {
+      throw error;
+    }
   }
 }

@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { DriverService } from './driver.service';
 import { CreateDriverUserDto } from './dto/create-driver.dto';
+import { DriverListDto } from './dto/driver-list.dto';
 import {
   ApiOperation,
   ApiResponse,
@@ -103,6 +104,51 @@ export class DriverController {
       return result;
     } catch (error) {
       this.logger.error(`Error fetching driver with id ${id}:`, error);
+      throw error;
+    }
+  }
+
+  @Get('list/drivers')
+  @ApiOperation({
+    summary: 'Lister les chauffeurs avec détails',
+    description: 'Retourne la liste des chauffeurs avec nom, téléphone, bus assigné et statut du bus',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Liste des chauffeurs récupérée avec succès',
+    schema: {
+      example: {
+        statusCode: 200,
+        message: 'Driver list retrieved successfully',
+        data: [
+          {
+            nom: 'Rakoto Jean',
+            telephone: '+261 34 12 345 67',
+            busAssigne: 'FNR-1024',
+            statutBus: 'APTE',
+            idDriver: 1,
+            idBus: 1,
+          },
+          {
+            nom: 'Rabe Hery',
+            telephone: '+261 34 12 345 68',
+            busAssigne: 'FNR-1108',
+            statutBus: 'APTE',
+            idDriver: 2,
+            idBus: 2,
+          },
+        ],
+      },
+    },
+  })
+  async getDriverList() {
+    try {
+      this.logger.log('Fetching driver list...');
+      const result = await this.driverService.getDriverList();
+      this.logger.log('Driver list fetched successfully');
+      return result;
+    } catch (error) {
+      this.logger.error('Error fetching driver list:', error);
       throw error;
     }
   }
