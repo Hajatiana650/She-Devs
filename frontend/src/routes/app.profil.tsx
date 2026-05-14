@@ -3,6 +3,7 @@ import { LogOut, User, Bell, Globe, HelpCircle, ChevronRight, ShieldCheck, Zap }
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth";
 import { CURRENT_USER } from "@/lib/mock-data";
+import { apiClient } from "@/lib/api-client";
 
 export const Route = createFileRoute("/app/profil")({
   component: Profil,
@@ -88,7 +89,7 @@ function Profil() {
 
         {/* Logout avec style destructif */}
         <button 
-          onClick={() => { logout(); navigate({ to: "/login" }); }}
+          onClick={() => { apiClient.logout();logout(); navigate({ to: "/login" }); }}
           className="w-full group relative h-16 rounded-[1.8rem] bg-rose-50 hover:bg-rose-500 transition-all duration-500 overflow-hidden"
         >
           <div className="relative z-10 flex items-center justify-center gap-3 text-rose-500 group-hover:text-white font-black text-lg transition-colors">
