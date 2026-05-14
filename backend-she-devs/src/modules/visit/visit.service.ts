@@ -84,4 +84,98 @@ export class VisitService extends CrudService<
   async delete(where: Prisma.VisitInsuranceWhereUniqueInput) {
     return super.delete(where);
   }
+
+  async getVisitsByDriver(idDriver: number) {
+    try {
+      // Récupérer le driver avec son bus
+      const driver = await this.prisma.driver.findUnique({
+        where: { id_driver: idDriver },
+        include: {
+          bus: true,
+        },
+      });
+
+      if (!driver) {
+        throw new NotFoundException(`Driver with id ${idDriver} not found`);
+      }
+
+      // Récupérer la dernière visite (tous types) du bus
+      const lastInsuranceVisit = await this.prisma.visitInsurance.findFirst({
+        where: {
+          busId: driver.id_bus,
+        },
+        orderBy: {
+          dateVisit: 'desc',
+        },
+      });
+
+      if (!lastInsuranceVisit) {
+        throw new NotFoundException(
+          `No visit found for driver ${idDriver}`,
+        );
+      }
+
+      // Calculer les données
+      const dateVisit = new Date(lastInsuranceVisit.dateVisit);
+      const dateLimit = new Date(lastInsuranceVisit.dateLimit);
+      const today = new Date();
+
+      // Format JJ/MM/YYYY
+      const formatDate = (date: Date) => {
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+      };
+
+      const lastVisitDate = formatDate(dateVisit);
+      const expirationDate = formatDate(dateLimit);
+
+      // Calculer jours restants
+      const daysRemaining = Math.ceil(
+        (dateLimit.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
+      );
+
+      // Calculer pourcentage (supposer 365 jours de validité standard)
+      const totalDaysValidity = Math.ceil(
+        (dateLimit.getTime() - dateVisit.getTime()) / (1000 * 60 * 60 * 24),
+      );
+      const percentage = Math.max(
+        0,
+        Math.min(
+          100,
+          Math.round((daysRemaining / totalDaysValidity) * 100),
+        ),
+      );
+
+      // Formater le compte à rebours
+      let countdown = '';
+      if (daysRemaining < 0) {
+        countdown = `EXPIRÉ depuis ${Math.abs(daysRemaining)} jour(s)`;
+      } else if (daysRemaining === 0) {
+        countdown = 'Expire AUJOURD\'HUI';
+      } else if (daysRemaining === 1) {
+        countdown = 'Expire dans 1 jour';
+      } else {
+        countdown = `Expire dans ${daysRemaining} jours`;
+      }
+
+      return {
+        statusCode: 200,
+        message: 'Driver insurance visits retrieved successfully',
+        data: {
+          lastVisitDate,
+          status: lastInsuranceVisit.result,
+          expirationDate,
+          countdown,
+          percentage,
+          visitId: lastInsuranceVisit.id,
+          visitType: lastInsuranceVisit.visitType,
+          observation: lastInsuranceVisit.observation || null,
+        },
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
 }
