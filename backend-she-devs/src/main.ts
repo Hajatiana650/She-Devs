@@ -14,7 +14,10 @@ async function bootstrap() {
     }),
   );
 app.enableCors({
-    origin: 'http://localhost:8080',
+    origin: [
+    'http://localhost:8080',
+    'http://192.168.56.1:8080',
+    ],
     credentials: true,
   });
   
