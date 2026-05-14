@@ -1,10 +1,10 @@
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { getMessages, Message, addMessage } from "@/lib/atsihitany";
 
-export const Route = {
-  path: "/citizen/atsihitany",
+export const Route = createFileRoute("/atsihitany_client")({
   component: CitizenChat,
-};
+});
 
 function CitizenChat() {
   const [messages, setMessages] = useState<Message[]>([]);
