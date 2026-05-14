@@ -13,7 +13,11 @@ async function bootstrap() {
       transform: true,
     }),
   );
-
+app.enableCors({
+    origin: 'http://localhost:8080',
+    credentials: true,
+  });
+  
   const config = new DocumentBuilder()
     .setTitle('API Users')
     .setDescription('Documentation API des utilisateurs')
