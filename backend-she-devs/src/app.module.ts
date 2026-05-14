@@ -15,6 +15,7 @@ import { AdminModule } from './modules/admin/admin.module';
 import { PopulationModule } from './modules/population/population.module';
 import { DriverModule } from './modules/driver/driver.module';
 import { BusModule } from './modules/bus/bus.module';
+import { LineModule } from './modules/line/line.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -26,6 +27,7 @@ import { BusModule } from './modules/bus/bus.module';
     PopulationModule,
     DriverModule,
     BusModule,
+    LineModule,
   ],
   controllers: [AppController],
   providers: [AppService],
