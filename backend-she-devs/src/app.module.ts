@@ -17,6 +17,9 @@ import { DriverModule } from './modules/driver/driver.module';
 import { BusModule } from './modules/bus/bus.module';
 import { LineModule } from './modules/line/line.module';
 import { StopModule } from './modules/stop/stop.module';
+import { VisitModule } from './modules/visit/visit.module';
+import { SearchModule } from './modules/search/search.module';
+import { TransportSessionModule } from './modules/transport-session/transport-session.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -30,6 +33,9 @@ import { StopModule } from './modules/stop/stop.module';
     BusModule,
     LineModule,
     StopModule,
+    VisitModule,
+    SearchModule,
+    TransportSessionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
