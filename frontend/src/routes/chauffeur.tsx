@@ -5,7 +5,7 @@ import {
   useRouterState,
   useNavigate,
 } from "@tanstack/react-router";
-import { Bus, ShieldCheck, User, LogOut, Sparkles } from "lucide-react";
+import { Bus, ShieldCheck, User, LogOut, Sparkles, Sparkles } from "lucide-react";
 import { useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -51,84 +51,79 @@ function ChauffeurLayout() {
               Accédez rapidement à votre bus, assurance et profil.
             </p>
           </div>
+    <div className="flex min-h-screen bg-gradient-to-br from-[#ecfffb] via-[#eef6ff] to-[#f5f3ff]">
+      {/* Desktop Sidebar */}
+      <aside className="hidden w-64 flex-col border-r border-white/20 bg-white/10 backdrop-blur-md md:flex">
+        <div className="border-b border-white/20 p-5">
+          <div className="flex items-center gap-2">
+            <Sparkles size={24} className="text-[#185FA5]" />
+            <div>
+              <h1 className="text-lg font-black text-[#1B254B]">FianaCity</h1>
+              <p className="text-xs text-[#185FA5]/70">Espace chauffeur</p>
+            </div>
+          </div>
         </div>
-
-        <nav className="flex-1 px-6 py-6 space-y-4">
+        <nav className="flex-1 space-y-2 p-4">
           {items.map((it) => {
             const active = path.startsWith(it.to);
             const Icon = it.icon;
 
             return (
-              <Link
-                key={it.to}
-                to={it.to}
-                className={`group flex items-center gap-4 rounded-[26px] border px-5 py-4 text-sm font-semibold transition-all duration-300 ${
-                  active
-                    ? "border-[#3BC1A8] bg-[#3BC1A8]/15 text-slate-900 shadow-lg shadow-[#3BC1A8]/10"
-                    : "border-transparent bg-white text-slate-700 hover:border-[#3BC1A8]/30 hover:bg-[#3BC1A8]/10 hover:text-[#0f766e]"
+              <Link 
+                key={it.to} 
+                to={it.to} 
+                className={`flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-300 ${
+                  active 
+                    ? 'bg-white text-[#185FA5] shadow-md scale-[1.02]' 
+                    : 'text-[#1B254B]/60 hover:bg-white/40 hover:text-[#185FA5]'
                 }`}
               >
-                <div className={`flex h-11 w-11 items-center justify-center rounded-2xl transition ${
-                  active ? "bg-[#3BC1A8] text-white" : "bg-[#3BC1A8]/10 text-[#3BC1A8] group-hover:bg-[#3BC1A8]/20"
-                }`}>
-                  <Icon size={18} />
-                </div>
-                <span>{it.label}</span>
+                <Icon size={18} /> {it.label}
               </Link>
             );
           })}
         </nav>
-
-        <div className="border-t border-[#3BC1A8]/10 px-6 py-5">
-          <Button
-            variant="ghost"
-            className="w-full justify-between gap-3 rounded-[26px] border border-[#3BC1A8]/10 bg-[#3BC1A8]/5 px-4 py-3 text-[#0f766e] transition hover:bg-[#3BC1A8]/10"
-            onClick={() => {
-              logout();
-              navigate({ to: "/login" });
-            }}
+        <div className="border-t border-white/20 p-4">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="w-full justify-start text-[#1B254B] font-semibold hover:bg-red-100/40 hover:text-red-600 transition-all" 
+            onClick={() => { logout(); navigate({ to: "/login" }); }}
           >
-            <span className="flex items-center gap-2">
-              <LogOut size={18} /> Déconnexion
-            </span>
+            <LogOut size={16} /> Déconnexion
           </Button>
         </div>
       </aside>
 
-      {/* MOBILE HEADER */}
+      {/* Mobile & Tablet View */}
       <div className="flex w-full flex-col md:hidden">
-        <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-[#3BC1A8]/10 bg-white/70 px-4 backdrop-blur-xl">
-          <h1 className="text-lg font-bold text-[#3BC1A8]">
-            FianaCity Chauffeur
-          </h1>
-          <button
-            className="rounded-full p-2 text-slate-600 hover:bg-red-50 hover:text-red-500"
-            onClick={() => {
-              logout();
-              navigate({ to: "/login" });
-            }}
+        <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-white/20 bg-white/10 backdrop-blur-md px-4">
+          <div className="flex items-center gap-2">
+            <Sparkles size={20} className="text-[#185FA5]" />
+            <h1 className="text-lg font-black text-[#1B254B]">FianaCity</h1>
+          </div>
+          <button 
+            onClick={() => { logout(); navigate({ to: "/login" }); }}
+            className="text-[#1B254B] hover:text-red-600 transition-colors"
           >
-            <LogOut size={18} />
+            <LogOut size={20} />
           </button>
         </header>
-
-        <nav className="flex border-b border-[#3BC1A8]/10 bg-white/70 backdrop-blur-xl">
+        <nav className="flex border-b border-white/20 bg-white/10 backdrop-blur-md">
           {items.map((it) => {
             const active = path.startsWith(it.to);
-
+            const Icon = it.icon;
             return (
-              <Link
-                key={it.to}
-                to={it.to}
-                className={`
-                  flex-1 px-3 py-3 text-center text-sm font-medium transition-all
-                  ${
-                    active
-                      ? "border-b-2 border-[#3BC1A8] text-[#3BC1A8]"
-                      : "text-slate-500"
-                  }
-                `}
+              <Link 
+                key={it.to} 
+                to={it.to} 
+                className={`flex-1 flex items-center justify-center gap-2 px-3 py-3 text-center text-sm font-bold transition-all ${
+                  active 
+                    ? 'border-b-2 border-[#185FA5] text-[#185FA5] bg-white/20' 
+                    : 'text-[#1B254B]/60 hover:bg-white/10'
+                }`}
               >
+                <it.icon size={16} />
                 {it.label}
               </Link>
             );
@@ -140,10 +135,7 @@ function ChauffeurLayout() {
         </main>
       </div>
 
-      {/* MAIN CONTENT DESKTOP */}
-      <main className="hidden flex-1 md:block">
-        <Outlet />
-      </main>
+      <main className="hidden flex-1 flex-col md:flex"><Outlet /></main>
     </div>
   );
 }
