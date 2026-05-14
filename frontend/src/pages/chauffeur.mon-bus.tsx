@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+// pages/chauffeur/mon-bus.tsx  (ou chauffeur.mon-bus.tsx selon ton import)
 import { useState } from "react";
 import { Bus as BusIcon, MapPin, Power } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -6,12 +6,14 @@ import { Badge } from "@/components/ui/badge";
 import { FianaMap, Marker, busIcon } from "@/components/ui/FianaMap";
 import { BUSES, BUS_LINES } from "@/lib/mock-data";
 
-
-
 export function MonBus() {
-  const bus = BUSES[0];
-  const line = BUS_LINES.find((l) => l.id === bus.ligneId)!;
   const [active, setActive] = useState(true);
+  
+  const bus = BUSES[0];
+  const line = BUS_LINES.find((l) => l.id === bus.ligneId);
+
+  if (!line) return <div className="p-6 text-red-500">Ligne introuvable</div>;
+  if (!bus) return <div className="p-6 text-red-500">Bus introuvable</div>;
 
   return (
     <div className="space-y-4 p-4 md:p-6">
