@@ -1,7 +1,7 @@
-import { Controller, Get, Logger } from '@nestjs/common';
+import { Controller, Get, Logger, Query } from '@nestjs/common';
 import { DashboardBusService } from './dashboard-bus.service';
 import { BusDashboardDto } from './dto/bus-dashboard.dto';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags, ApiQuery } from '@nestjs/swagger';
 
 @Controller('admin/dashboard/bus')
 @ApiTags('Admin - Dashboard Bus')
@@ -39,6 +39,60 @@ export class DashboardBusController {
       return result;
     } catch (error) {
       this.logger.error('Error fetching bus dashboard:', error);
+      throw error;
+    }
+  }
+
+  @Get('management')
+  @ApiOperation({
+    summary: 'Gestion des buses avec détails',
+    description: 'Retourne la liste des buses avec matricule, ligne, chauffeur, statut et visites',
+  })
+  @ApiQuery({
+    name: 'filter',
+    enum: ['all', 'apte', 'inapte', 'expiring'],
+    required: false,
+    description:
+      'Filtrer les buses: all (tous), apte (APTES), inapte (INAPTES), expiring (expiration dans 30j)',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Gestion buses récupérée avec succès',
+    schema: {
+      example: {
+        statusCode: 200,
+        message: 'Bus management dashboard retrieved successfully',
+        data: {
+          busRetires: 1,
+          buses: [
+            {
+              matricule: 'FNR-1024',
+              ligne: 'L1',
+              chauffeur: 'Rakoto Jean',
+              statut: 'APTE',
+              derniereVisite: '12/03/2025',
+              expiration: '12/09/2026',
+              idBus: 1,
+              joursRestants: 120,
+              pourcentage: 95,
+            },
+          ],
+        },
+      },
+    },
+  })
+  async getManagementBusDashboard(
+    @Query('filter') filter: 'all' | 'apte' | 'inapte' | 'expiring' = 'all',
+  ) {
+    try {
+      this.logger.log(`Fetching bus management dashboard with filter: ${filter}`);
+      const result = await this.dashboardBusService.getManagementBusDashboard(
+        filter,
+      );
+      this.logger.log('Bus management dashboard retrieved successfully');
+      return result;
+    } catch (error) {
+      this.logger.error('Error fetching bus management dashboard:', error);
       throw error;
     }
   }
