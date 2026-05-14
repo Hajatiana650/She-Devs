@@ -11,7 +11,4 @@ export class AuthenticateDto {
   @MinLength(6)
   password!: string;
 
-  @ApiProperty({ example: 'USER' })
-  @IsString()
-  role?: string;
 }
