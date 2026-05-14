@@ -5,11 +5,9 @@ export async function loginByRole(
   email: string,
   password: string
 ) {
-  // 1. Login normal
   const user = await apiClient.login<any>(email, password);
   console.log(" User après login :", user);
 
-  // 2. Si c'est un admin → on récupère la liste des admins
   if (selectedRole === "ADMIN_BUS" || selectedRole === "ADMIN_TRASH") {
     try {
       const adminList = await apiClient.get<any[]>("/admin");  
