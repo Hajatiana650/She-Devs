@@ -45,7 +45,7 @@ async function request<T>(
     throw new Error(error.message ?? `Erreur ${response.status}`);
   }
 
-  // ✅ backend NON wrappé dans {data}
+  
   const json = await response.json();
 
   return json;

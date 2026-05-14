@@ -2,24 +2,82 @@ import { createFileRoute } from "@tanstack/react-router";
 import { BUSES } from "@/lib/mock-data";
 
 export const Route = createFileRoute("/admin-bus/chauffeurs")({
-  component: () => (
-    <div className="p-6 space-y-4">
-      <h1 className="text-2xl font-bold">Chauffeurs</h1>
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {BUSES.map((b) => (
-          <div key={b.id} className="rounded-xl border bg-card p-4">
-            <div className="flex items-center gap-3">
-              <div className="flex size-12 items-center justify-center rounded-full bg-bus text-bus-foreground font-bold">
-                {b.chauffeur.split(" ").map((n) => n[0]).join("")}
+  component: ChauffeursList,
+});
+
+function ChauffeursList() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-[#ecfffb] via-[#eef6ff] to-[#f5f3ff] p-6 md:p-10 font-sans overflow-x-hidden">
+      
+      <style>{`
+        @keyframes slideUp {
+          from { opacity: 0; transform: translateY(40px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .reveal-card {
+          animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+          opacity: 0;
+        }
+      `}</style>
+
+      <div className="max-w-7xl mx-auto space-y-12">
+        
+        {/* HEADER */}
+        <div className="flex flex-col md:flex-row justify-between items-end gap-6 reveal-card" style={{ animationDelay: '100ms' }}>
+          <div>
+            <h1 className="text-5xl font-[1000] tracking-tighter text-[#1B254B]">
+              Équipe <span className="text-[#185FA5]">Chauffeurs</span>
+            </h1>
+            <div className="h-2 w-20 bg-[#3BC1A8] mt-2 rounded-full" />
+          </div>
+          <p className="text-[#185FA5] font-bold text-sm bg-white/50 px-6 py-2 rounded-full border border-white">
+            {BUSES.length} Pilotes assignés
+          </p>
+        </div>
+
+        {/* GRILLE DES CARTES */}
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {BUSES.map((b, index) => (
+            <div 
+              key={b.id} 
+              className="reveal-card group bg-white/70 backdrop-blur-xl border border-white rounded-[2.5rem] overflow-hidden shadow-xl shadow-[#1B254B]/5 transition-all duration-500 hover:shadow-2xl hover:shadow-[#185FA5]/15 hover:-translate-y-3"
+              style={{ animationDelay: `${(index + 1) * 100}ms`, animationFillMode: 'forwards' }}
+            >
+              {/* CORPS DE LA CARTE */}
+              <div className="p-8 flex flex-col items-center">
+                {/* AVATAR */}
+                <div className="size-24 mb-6 relative">
+                  <div className="size-full bg-[#185FA5] rounded-3xl flex items-center justify-center shadow-lg transition-all duration-500 group-hover:scale-110 group-hover:rotate-6">
+                    <span className="text-white font-[1000] text-3xl tracking-tighter">
+                      {b.chauffeur.split(" ").map(n => n[0]).join("")}
+                    </span>
+                  </div>
+                  <div className="absolute -bottom-2 -right-2 size-6 bg-[#3BC1A8] border-4 border-white rounded-full" />
+                </div>
+
+                <h3 className="text-xl font-[1000] text-[#1B254B] uppercase tracking-tighter text-center line-clamp-1">
+                  {b.chauffeur}
+                </h3>
               </div>
-              <div>
-                <div className="font-semibold">{b.chauffeur}</div>
-                <div className="text-xs text-muted-foreground">{b.matricule}</div>
+
+              {/* SECTION NUMÉRO DE BUS (ORGANISÉE) */}
+              <div className="bg-[#185FA5]/5 border-y border-[#185FA5]/10 px-8 py-4 flex items-center justify-between">
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Véhicule</span>
+                <span className="bg-[#185FA5] text-white font-black text-xs px-3 py-1 rounded-lg shadow-sm group-hover:bg-[#3BC1A8] transition-colors">
+                  {b.matricule}
+                </span>
+              </div>
+
+              {/* ACTION */}
+              <div className="p-6">
+                <button className="w-full bg-[#1B254B] hover:bg-[#185FA5] text-white py-4 rounded-2xl font-[1000] text-[10px] tracking-[0.25em] transition-all uppercase active:scale-95 shadow-md">
+                  Fiche Pilote
+                </button>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
-  ),
-});
+  );
+}
