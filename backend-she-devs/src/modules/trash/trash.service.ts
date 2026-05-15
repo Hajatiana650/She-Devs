@@ -12,27 +12,27 @@ export class TrashService {
   async dashboard() {
     const pendingSignals = await this.prisma.signal.count({
       where: {
-        status: 'EN_ATTENTE',
+        signal_status: false,
       },
     });
 
     const plannedCollects = await this.prisma.collect.count({
       where: {
-        status: 'PLANIFIÉE',
+        date_collect: { not: undefined },
       },
     });
 
     const priorityQuarters = await this.prisma.signal.groupBy({
-      by: ['quarter_id'],
+      by: ['id_quarter'],
       where: {
-        priority: 'HAUTE',
+        signal_status: false,
       },
       _count: true,
     });
 
     const treatedSignals = await this.prisma.signal.count({
       where: {
-        status: 'TRAITÉ',
+        signal_status: true,
       },
     });
 
@@ -48,10 +48,14 @@ export class TrashService {
     return this.prisma.signal.findMany({
       include: {
         quarter: true,
-        user: true,
+        population: {
+          include: {
+            user: true,
+          },
+        },
       },
       orderBy: {
-        date_signal: 'desc',
+        id_signal: 'desc',
       },
     });
   }
@@ -59,16 +63,19 @@ export class TrashService {
   async createSignal(dto: CreateSignalDto) {
     return this.prisma.signal.create({
       data: {
-        photo: dto.photo,
-        description: dto.description,
-        priority: dto.priority || 'NORMALE',
-        status: dto.status || 'EN_ATTENTE',
-        quarter_id: dto.quarter_id,
-        user_id: dto.user_id,
+        photo: dto.photo ? dto.photo : 'default-signal.jpg',
+        description: dto.description ? dto.description : 'Signal créé',
+        signal_status: false,
+        id_population: dto.user_id || 1,
+        id_quarter: dto.quarter_id || 1,
       },
       include: {
         quarter: true,
-        user: true,
+        population: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
   }
@@ -84,10 +91,14 @@ export class TrashService {
 
     return this.prisma.signal.update({
       where: { id_signal: id },
-      data: { status },
+      data: { signal_status: true },
       include: {
         quarter: true,
-        user: true,
+        population: {
+          include: {
+            user: true,
+          },
+        },
       },
     });
   }
@@ -104,23 +115,31 @@ export class TrashService {
 
   async getSignalsByQuarter(quarterId: number) {
     return this.prisma.signal.findMany({
-      where: { quarter_id: quarterId },
+      where: { id_quarter: quarterId },
       include: {
         quarter: true,
-        user: true,
+        population: {
+          include: {
+            user: true,
+          },
+        },
       },
-      orderBy: { date_signal: 'desc' },
+      orderBy: { id_signal: 'desc' },
     });
   }
 
   async getSignalsByPriority(priority: string) {
     return this.prisma.signal.findMany({
-      where: { priority },
+      where: { signal_status: false },
       include: {
         quarter: true,
-        user: true,
+        population: {
+          include: {
+            user: true,
+          },
+        },
       },
-      orderBy: { date_signal: 'desc' },
+      orderBy: { id_signal: 'desc' },
     });
   }
 }

@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet, Link, useRouterState, useNavigate, redirect } from "@tanstack/react-router";
-import { Bus, AlertTriangle, Megaphone, User } from "lucide-react";
+import { Bus, AlertTriangle, Megaphone, User, BarChart3 } from "lucide-react";
 import { useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 
@@ -7,16 +7,24 @@ export const Route = createFileRoute("/app")({
   component: AppLayout,
 });
 
-const tabs = [
+const citizenTabs = [
   { to: "/app/bus", label: "Bus", icon: Bus },
   { to: "/app/signaler", label: "Signaler", icon: AlertTriangle },
   { to: "/app/campagnes", label: "Campagnes", icon: Megaphone },
   { to: "/app/profil", label: "Profil", icon: User },
 ];
 
+const adminTabs = [
+  { to: "/app/admin", label: "Dashboard", icon: BarChart3 },
+  { to: "/app/bus", label: "Bus", icon: Bus },
+  { to: "/app/profil", label: "Profil", icon: User },
+];
+
 function AppLayout() {
   const { role } = useAuth();
   const navigate = useNavigate();
+  const tabs = role === "ADMIN" ? adminTabs : citizenTabs;
+
   useEffect(() => {
     if (!role) navigate({ to: "/login" });
   }, [role, navigate]);
@@ -27,14 +35,18 @@ function AppLayout() {
     <div className="flex min-h-screen flex-col bg-background pb-16">
       <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b bg-card px-4">
         <h1 className="text-lg font-bold">FianaCity</h1>
-        <span className="text-xs text-muted-foreground">Citoyen</span>
+        <span className="text-xs text-muted-foreground">
+          {role === "ADMIN" ? "Administrateur" : "Citoyen"}
+        </span>
       </header>
 
       <main className="flex-1">
         <Outlet />
       </main>
 
-      <nav className="fixed bottom-0 left-0 right-0 z-30 grid grid-cols-4 border-t bg-card">
+      <nav className={`fixed bottom-0 left-0 right-0 z-30 border-t bg-card grid ${
+        role === "ADMIN" ? "grid-cols-3" : "grid-cols-4"
+      }`}>
         {tabs.map((t) => {
           const active = path.startsWith(t.to);
           const Icon = t.icon;

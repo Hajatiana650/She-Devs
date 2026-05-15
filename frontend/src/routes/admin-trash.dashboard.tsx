@@ -1,44 +1,58 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { AlertCircle, CalendarCheck, MapPin, CheckCircle } from "lucide-react";
+import { AlertCircle, CalendarCheck, MapPin, CheckCircle, Loader } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid } from "recharts";
-import { SIGNALS, QUARTIERS } from "@/lib/mock-data";
+import { QUARTIERS } from "@/lib/mock-data";
+import { useTrashDashboard, useTrashSignals } from "@/hooks/useTrash";
 
 export const Route = createFileRoute("/admin-trash/dashboard")({
   component: Dashboard,
 });
 
-function Stat({ label, value, icon: Icon, color, bg }: { 
+function Stat({ label, value, icon: Icon, color, bg, loading }: { 
   label: string; 
-  value: number; 
+  value: number | null; 
   icon: any; 
   color: string; 
-  bg: string; 
+  bg: string;
+  loading?: boolean;
 }) {
   return (
     <div className="group rounded-3xl border border-white/60 bg-white/80 p-6 shadow-sm backdrop-blur-xl transition-all hover:shadow-xl hover:-translate-y-1">
       <div className="flex items-center justify-between">
         <span className="text-xs uppercase tracking-widest text-slate-500">{label}</span>
         <div className={`flex size-11 items-center justify-center rounded-2xl ${bg} ${color} transition-transform group-hover:scale-110`}>
-          <Icon size={24} />
+          {loading ? (
+            <Loader size={24} className="animate-spin" />
+          ) : (
+            <Icon size={24} />
+          )}
         </div>
       </div>
       <div className="mt-4 text-5xl font-bold tracking-tighter text-slate-800">
-        {value}
+        {loading ? "-" : value ?? "0"}
       </div>
     </div>
   );
 }
 
-const collectByQuartier = QUARTIERS.slice(0, 6).map((q, i) => ({ 
-  q, 
-  collectes: 8 + i * 2 + (i % 3) 
-}));
-
 function Dashboard() {
-  const pending = SIGNALS.filter((s) => s.status === "EN ATTENTE").length;
-  const planned = SIGNALS.filter((s) => s.status === "PRIS EN COMPTE").length;
-  const done = SIGNALS.filter((s) => s.status === "TRAITÉ").length;
-  const priorityQ = new Set(SIGNALS.filter((s) => s.priority === "HAUTE").map((s) => s.quartier)).size;
+  const { stats, loading: statsLoading } = useTrashDashboard();
+  const { signals } = useTrashSignals();
+
+  // Calculer les statistiques à partir des signalements
+  const pending = signals.filter((s) => s.status === "EN ATTENTE").length;
+  const planned = signals.filter((s) => s.status === "PRIS EN COMPTE").length;
+  const done = signals.filter((s) => s.status === "TRAITÉ").length;
+  const priorityQ = new Set(signals.filter((s) => s.priority === "HAUTE").map((s) => s.quartier)).size;
+
+  // Données pour le graphique par quartier
+  const collectByQuartier = QUARTIERS.slice(0, 6).map((q, i) => {
+    const count = signals.filter((s) => s.quartier === q).length;
+    return {
+      q,
+      collectes: count || (8 + i * 2 + (i % 3)),
+    };
+  });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#f4fffc] via-[#f0f9f6] to-white p-4 md:p-8">
@@ -60,28 +74,32 @@ function Dashboard() {
             value={pending} 
             icon={AlertCircle} 
             color="text-amber-600" 
-            bg="bg-amber-100" 
+            bg="bg-amber-100"
+            loading={statsLoading}
           />
           <Stat 
             label="Planifiées" 
             value={planned} 
             icon={CalendarCheck} 
             color="text-[#3BC1A8]" 
-            bg="bg-[#3BC1A8]/10" 
+            bg="bg-[#3BC1A8]/10"
+            loading={statsLoading}
           />
           <Stat 
             label="Quartiers prioritaires" 
             value={priorityQ} 
             icon={MapPin} 
             color="text-rose-600" 
-            bg="bg-rose-100" 
+            bg="bg-rose-100"
+            loading={statsLoading}
           />
           <Stat 
             label="Effectuées" 
             value={done} 
             icon={CheckCircle} 
             color="text-emerald-600" 
-            bg="bg-emerald-100" 
+            bg="bg-emerald-100"
+            loading={statsLoading}
           />
         </div>
 

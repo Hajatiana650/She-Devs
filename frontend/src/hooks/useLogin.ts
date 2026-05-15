@@ -24,17 +24,21 @@ export function useLogin() {
     mutationFn: ({ role, email, password }: LoginPayload) =>
       loginByRole(role, email, password),
 
-   onSuccess: (data, variables) => {
-  console.log("Connexion réussie :", data);
+    onSuccess: (data, variables) => {
+      console.log("Connexion réussie :", data);
 
-  const userEmail = data.email || variables.email;
+      const userEmail = data.email || variables.email;
 
-  setRole(variables.role, userEmail);
+      setRole(variables.role, userEmail);
 
-  navigate({
-    to: ROLE_ROUTES[variables.role],
-  });
-},
+      navigate({
+        to: ROLE_ROUTES[variables.role],
+      });
+    },
+    
+    onError: (error) => {
+      console.error("Erreur login:", error);
+    }
   });
 
   return {

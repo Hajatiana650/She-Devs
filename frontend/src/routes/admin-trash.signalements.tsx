@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { SIGNALS, type Signal } from "@/lib/mock-data";
-import { toast } from "sonner";
-import { Eye, CheckCircle } from "lucide-react";
+import { useTrashSignals } from "@/hooks/useTrash";
+import { luxeToast } from "@/lib/luxe-toast";
+import type { Signal } from "@/api/trash.api";
+import { Eye, CheckCircle, Loader } from "lucide-react";
+import { useState } from "react";
 
 export const Route = createFileRoute("/admin-trash/signalements")({
   component: Signalements,
@@ -24,11 +25,21 @@ function statusBadge(s: Signal["status"]) {
 }
 
 function Signalements() {
-  const [items, setItems] = useState(SIGNALS);
+  const { signals, loading, validateSignal } = useTrashSignals();
+  const [validatingId, setValidatingId] = useState<number | null>(null);
 
-  const accept = (id: string) => {
-    setItems((arr) => arr.map((s) => s.id === id ? { ...s, status: "PRIS EN COMPTE" as const } : s));
-    toast.success("Signalement pris en compte ✓ Citoyen notifié");
+  const accept = async (id: number) => {
+    setValidatingId(id);
+    try {
+      const success = await validateSignal(id);
+      if (success) {
+        luxeToast.signalAccepted();
+      }
+    } catch (error) {
+      luxeToast.error("Erreur lors de la validation du signalement");
+    } finally {
+      setValidatingId(null);
+    }
   };
 
   return (
@@ -55,82 +66,99 @@ function Signalements() {
               <div>
                 <h2 className="text-2xl font-semibold text-slate-800">Tous les signalements</h2>
                 <p className="text-sm text-slate-500 mt-1">
-                  {items.length} signalements au total
+                  {signals.length} signalements au total
                 </p>
               </div>
               <div className="text-sm px-4 py-2 bg-white rounded-2xl border border-slate-100">
-                Mise à jour en temps réel
+                {loading ? "Chargement..." : "Mise à jour en temps réel"}
               </div>
             </div>
 
-            <div className="overflow-x-auto rounded-2xl border border-slate-100">
-              <Table>
-                <TableHeader>
-                  <TableRow className="border-b border-slate-100 hover:bg-transparent">
-                    <TableHead className="w-20">Photo</TableHead>
-                    <TableHead>Quartier</TableHead>
-                    <TableHead>Signalé par</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Priorité</TableHead>
-                    <TableHead>Statut</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {items.map((s) => (
-                    <TableRow 
-                      key={s.id} 
-                      className="group hover:bg-slate-50/80 transition-colors border-b border-slate-100 last:border-0"
-                    >
-                      <TableCell>
-                        <img 
-                          src={s.photo} 
-                          alt="Signalement" 
-                          className="size-14 rounded-2xl object-cover ring-1 ring-slate-100" 
-                        />
-                      </TableCell>
-                      <TableCell className="font-medium text-slate-800">{s.quartier}</TableCell>
-                      <TableCell className="text-slate-600">{s.reportedBy}</TableCell>
-                      <TableCell className="text-sm text-slate-500">{s.date}</TableCell>
-                      
-                      <TableCell>
-                        <Badge className={`rounded-full px-4 py-1 text-xs font-semibold ${priorityBadge(s.priority)}`}>
-                          {s.priority}
-                        </Badge>
-                      </TableCell>
-
-                      <TableCell>
-                        <Badge className={`rounded-full px-4 py-1 text-xs font-semibold ${statusBadge(s.status)}`}>
-                          {s.status}
-                        </Badge>
-                      </TableCell>
-
-                      <TableCell className="text-right">
-                        {s.status === "EN ATTENTE" ? (
-                          <Button 
-                            onClick={() => accept(s.id)}
-                            className="bg-[#3BC1A8] hover:bg-[#3BC1A8]/90 text-white rounded-2xl px-6 shadow-md transition-all duration-200 hover:scale-105 flex items-center gap-2"
-                          >
-                            <CheckCircle size={18} />
-                            Prendre en compte
-                          </Button>
-                        ) : (
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            className="rounded-2xl border-slate-200 text-slate-500"
-                            disabled
-                          >
-                            <Eye size={18} className="mr-2" />
-                            Déjà pris en compte
-                          </Button>
-                        )}
-                      </TableCell>
+            {loading ? (
+              <div className="flex flex-col items-center justify-center py-12 gap-3">
+                <Loader size={40} className="animate-spin text-[#3BC1A8]" />
+                <p className="text-slate-500">Chargement des signalements...</p>
+              </div>
+            ) : signals.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-slate-500 mb-2">Aucun signalement pour le moment</p>
+                <p className="text-xs text-slate-400">Les signalements des citoyens apparaîtront ici</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto rounded-2xl border border-slate-100">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="border-b border-slate-100 hover:bg-transparent">
+                      <TableHead className="w-20">Photo</TableHead>
+                      <TableHead>Quartier</TableHead>
+                      <TableHead>Signalé par</TableHead>
+                      <TableHead>Date</TableHead>
+                      <TableHead>Priorité</TableHead>
+                      <TableHead>Statut</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                  </TableHeader>
+                  <TableBody>
+                    {signals.map((s) => (
+                      <TableRow 
+                        key={s.id} 
+                        className="group hover:bg-slate-50/80 transition-colors border-b border-slate-100 last:border-0"
+                      >
+                        <TableCell>
+                          <img 
+                            src={s.photo} 
+                            alt="Signalement" 
+                            className="size-14 rounded-2xl object-cover ring-1 ring-slate-100" 
+                          />
+                        </TableCell>
+                        <TableCell className="font-medium text-slate-800">{s.quartier}</TableCell>
+                        <TableCell className="text-slate-600">{s.reportedBy}</TableCell>
+                        <TableCell className="text-sm text-slate-500">{s.date}</TableCell>
+                        
+                        <TableCell>
+                          <Badge className={`rounded-full px-4 py-1 text-xs font-semibold ${priorityBadge(s.priority)}`}>
+                            {s.priority}
+                          </Badge>
+                        </TableCell>
+
+                        <TableCell>
+                          <Badge className={`rounded-full px-4 py-1 text-xs font-semibold ${statusBadge(s.status)}`}>
+                            {s.status}
+                          </Badge>
+                        </TableCell>
+
+                        <TableCell className="text-right">
+                          {s.status === "EN ATTENTE" ? (
+                            <Button 
+                              onClick={() => accept(s.id)}
+                              disabled={validatingId === s.id}
+                              className="bg-[#3BC1A8] hover:bg-[#3BC1A8]/90 text-white rounded-2xl px-6 shadow-md transition-all duration-200 hover:scale-105 flex items-center gap-2 disabled:opacity-50"
+                            >
+                              {validatingId === s.id ? (
+                                <Loader size={18} className="animate-spin" />
+                              ) : (
+                                <CheckCircle size={18} />
+                              )}
+                              {validatingId === s.id ? "..." : "Prendre en compte"}
+                            </Button>
+                          ) : (
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              className="rounded-2xl border-slate-200 text-slate-500"
+                              disabled
+                            >
+                              <Eye size={18} className="mr-2" />
+                              Déjà pris en compte
+                            </Button>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
           </div>
         </div>
 

@@ -8,124 +8,90 @@ export class CampaignService {
   constructor(private prisma: PrismaService) {}
 
   async findAll() {
-    return this.prisma.campaign.findMany({
+    return this.prisma.notice.findMany({
       include: {
-        quarters: {
-          include: {
-            quarter: true,
-          },
-        },
+        quarter: true,
       },
       orderBy: {
-        date_start: 'desc',
+        date_notice: 'desc',
       },
     });
   }
 
-  async findOne(id_campaign: number) {
-    return this.prisma.campaign.findUnique({
-      where: { id_campaign },
+  async findOne(id_notice: number) {
+    return this.prisma.notice.findUnique({
+      where: { id_notice },
       include: {
-        quarters: {
-          include: {
-            quarter: true,
-          },
-        },
+        quarter: true,
       },
     });
   }
 
-  async findByStatus(status: string) {
-    return this.prisma.campaign.findMany({
-      where: { status },
+  async findByQuarter(quarterId: number) {
+    return this.prisma.notice.findMany({
+      where: { id_quarter: quarterId },
       include: {
-        quarters: {
-          include: {
-            quarter: true,
-          },
-        },
+        quarter: true,
       },
-      orderBy: { date_start: 'desc' },
+      orderBy: { date_notice: 'desc' },
     });
   }
 
   async create(dto: CreateCampaignDto) {
-    return this.prisma.campaign.create({
+    return this.prisma.notice.create({
       data: {
-        title: dto.title,
-        message: dto.message,
-        date_start: new Date(dto.date_start),
-        date_end: new Date(dto.date_end),
-        status: 'ACTIVE',
-        participant_count: 0,
-        quarters: {
-          create: dto.quarter_ids.map((quarter_id) => ({
-            quarter_id,
-          })),
-        },
+        title: dto.title || 'Campagne',
+        content: dto.message || '',
+        description: dto.message || '',
+        date_notice: new Date(),
+        id_quarter: dto.quarter_ids?.[0] || 1,
       },
       include: {
-        quarters: {
-          include: {
-            quarter: true,
-          },
-        },
+        quarter: true,
       },
     });
   }
 
-  async update(id_campaign: number, dto: Partial<CreateCampaignDto>) {
-    const campaign = await this.findOne(id_campaign);
-    if (!campaign) {
+  async update(id_notice: number, dto: Partial<CreateCampaignDto>) {
+    const notice = await this.findOne(id_notice);
+    if (!notice) {
       throw new NotFoundException('Campaign not found');
     }
 
-    return this.prisma.campaign.update({
-      where: { id_campaign },
+    return this.prisma.notice.update({
+      where: { id_notice },
       data: {
         title: dto.title,
-        message: dto.message,
-        date_start: dto.date_start ? new Date(dto.date_start) : undefined,
-        date_end: dto.date_end ? new Date(dto.date_end) : undefined,
+        content: dto.message,
+        description: dto.message,
       },
       include: {
-        quarters: {
-          include: {
-            quarter: true,
-          },
-        },
+        quarter: true,
       },
     });
   }
 
-  async updateStatus(id_campaign: number, status: string) {
-    return this.prisma.campaign.update({
-      where: { id_campaign },
-      data: { status },
-      include: {
-        quarters: {
-          include: {
-            quarter: true,
-          },
-        },
-      },
-    });
-  }
-
-  async incrementParticipants(id_campaign: number, count: number = 1) {
-    return this.prisma.campaign.update({
-      where: { id_campaign },
+  async updateStatus(id_notice: number, status: string) {
+    return this.prisma.notice.update({
+      where: { id_notice },
       data: {
-        participant_count: {
-          increment: count,
-        },
+        title: status,
+      },
+      include: {
+        quarter: true,
       },
     });
   }
 
-  async remove(id_campaign: number) {
-    return this.prisma.campaign.delete({
-      where: { id_campaign },
+  async incrementParticipants(id_notice: number, count: number = 1) {
+    return this.prisma.notice.findUnique({
+      where: { id_notice },
+    });
+  }
+
+  async remove(id_notice: number) {
+    return this.prisma.notice.delete({
+      where: { id_notice },
     });
   }
 }

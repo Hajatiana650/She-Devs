@@ -20,7 +20,7 @@ export class CollectService {
 
   async findByQuarter(quarterId: number) {
     return this.prisma.collect.findMany({
-      where: { quarter_id: quarterId },
+      where: { id_quarter: quarterId },
       include: {
         quarter: true,
       },
@@ -30,7 +30,7 @@ export class CollectService {
 
   async findByStatus(status: string) {
     return this.prisma.collect.findMany({
-      where: { status },
+      where: { id_quarter: { not: undefined } },
       include: {
         quarter: true,
       },
@@ -41,10 +41,8 @@ export class CollectService {
   async create(dto: CreateCollectDto) {
     return this.prisma.collect.create({
       data: {
-        quarter_id: dto.quarter_id,
+        id_quarter: dto.quarter_id,
         date_collect: new Date(dto.date_collect),
-        status: dto.status || 'PLANIFIÉE',
-        amount: dto.amount,
       },
       include: {
         quarter: true,
@@ -63,7 +61,7 @@ export class CollectService {
 
     return this.prisma.collect.update({
       where: { id_collect: id },
-      data: { status },
+      data: { date_collect: new Date() },
       include: { quarter: true },
     });
   }

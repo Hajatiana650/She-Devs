@@ -9,7 +9,7 @@ export class StatsService {
   async getSignalsByQuarter() {
     // Utiliser Prisma au lieu de SQL brut
     return this.prisma.signal.groupBy({
-      by: ['status'],
+      by: ['id_quarter'],
       _count: true,
     });
   }
@@ -24,7 +24,7 @@ export class StatsService {
   async getTreatmentRate() {
     const total = await this.prisma.signal.count();
     const treated = await this.prisma.signal.count({
-      where: { status: 'TRAITÉ' },
+      where: { signal_status: true },
     });
     return { rate: total ? (treated / total) * 100 : 0, total, treated };
   }
@@ -32,7 +32,7 @@ export class StatsService {
   async getOverview() {
     const signals = await this.prisma.signal.count();
     const treated = await this.prisma.signal.count({
-      where: { status: 'TRAITÉ' },
+      where: { signal_status: true },
     });
     const collects = await this.prisma.collect.count();
 

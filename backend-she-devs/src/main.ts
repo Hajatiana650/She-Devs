@@ -15,10 +15,14 @@ async function bootstrap() {
   );
 app.enableCors({
     origin: [
-    'http://localhost:8080',
-    'http://192.168.56.1:8080',
+      'http://localhost:8080',
+      'http://localhost:8082',
+      'http://192.168.56.1:8080',
+      'http://192.168.56.1:8082',
     ],
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   });
   
   const config = new DocumentBuilder()
