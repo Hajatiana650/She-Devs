@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ChauffeurRouteImport } from './routes/chauffeur'
+import { Route as Atsihitany_clientRouteImport } from './routes/atsihitany_client'
+import { Route as Atsihitany_adminRouteImport } from './routes/atsihitany_admin'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as AdminTrashRouteImport } from './routes/admin-trash'
 import { Route as AdminBusRouteImport } from './routes/admin-bus'
@@ -44,6 +46,16 @@ const LoginRoute = LoginRouteImport.update({
 const ChauffeurRoute = ChauffeurRouteImport.update({
   id: '/chauffeur',
   path: '/chauffeur',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Atsihitany_clientRoute = Atsihitany_clientRouteImport.update({
+  id: '/atsihitany_client',
+  path: '/atsihitany_client',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Atsihitany_adminRoute = Atsihitany_adminRouteImport.update({
+  id: '/atsihitany_admin',
+  path: '/atsihitany_admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppRoute = AppRouteImport.update({
@@ -172,6 +184,8 @@ export interface FileRoutesByFullPath {
   '/admin-bus': typeof AdminBusRouteWithChildren
   '/admin-trash': typeof AdminTrashRouteWithChildren
   '/app': typeof AppRouteWithChildren
+  '/atsihitany_admin': typeof Atsihitany_adminRoute
+  '/atsihitany_client': typeof Atsihitany_clientRoute
   '/chauffeur': typeof ChauffeurRouteWithChildren
   '/login': typeof LoginRoute
   '/admin-bus/atsihitany': typeof AdminBusAtsihitanyRoute
@@ -200,6 +214,8 @@ export interface FileRoutesByTo {
   '/admin-bus': typeof AdminBusRouteWithChildren
   '/admin-trash': typeof AdminTrashRouteWithChildren
   '/app': typeof AppRouteWithChildren
+  '/atsihitany_admin': typeof Atsihitany_adminRoute
+  '/atsihitany_client': typeof Atsihitany_clientRoute
   '/chauffeur': typeof ChauffeurRouteWithChildren
   '/login': typeof LoginRoute
   '/admin-bus/atsihitany': typeof AdminBusAtsihitanyRoute
@@ -229,6 +245,8 @@ export interface FileRoutesById {
   '/admin-bus': typeof AdminBusRouteWithChildren
   '/admin-trash': typeof AdminTrashRouteWithChildren
   '/app': typeof AppRouteWithChildren
+  '/atsihitany_admin': typeof Atsihitany_adminRoute
+  '/atsihitany_client': typeof Atsihitany_clientRoute
   '/chauffeur': typeof ChauffeurRouteWithChildren
   '/login': typeof LoginRoute
   '/admin-bus/atsihitany': typeof AdminBusAtsihitanyRoute
@@ -259,6 +277,8 @@ export interface FileRouteTypes {
     | '/admin-bus'
     | '/admin-trash'
     | '/app'
+    | '/atsihitany_admin'
+    | '/atsihitany_client'
     | '/chauffeur'
     | '/login'
     | '/admin-bus/atsihitany'
@@ -287,6 +307,8 @@ export interface FileRouteTypes {
     | '/admin-bus'
     | '/admin-trash'
     | '/app'
+    | '/atsihitany_admin'
+    | '/atsihitany_client'
     | '/chauffeur'
     | '/login'
     | '/admin-bus/atsihitany'
@@ -315,6 +337,8 @@ export interface FileRouteTypes {
     | '/admin-bus'
     | '/admin-trash'
     | '/app'
+    | '/atsihitany_admin'
+    | '/atsihitany_client'
     | '/chauffeur'
     | '/login'
     | '/admin-bus/atsihitany'
@@ -344,6 +368,8 @@ export interface RootRouteChildren {
   AdminBusRoute: typeof AdminBusRouteWithChildren
   AdminTrashRoute: typeof AdminTrashRouteWithChildren
   AppRoute: typeof AppRouteWithChildren
+  Atsihitany_adminRoute: typeof Atsihitany_adminRoute
+  Atsihitany_clientRoute: typeof Atsihitany_clientRoute
   ChauffeurRoute: typeof ChauffeurRouteWithChildren
   LoginRoute: typeof LoginRoute
 }
@@ -362,6 +388,20 @@ declare module '@tanstack/react-router' {
       path: '/chauffeur'
       fullPath: '/chauffeur'
       preLoaderRoute: typeof ChauffeurRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/atsihitany_client': {
+      id: '/atsihitany_client'
+      path: '/atsihitany_client'
+      fullPath: '/atsihitany_client'
+      preLoaderRoute: typeof Atsihitany_clientRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/atsihitany_admin': {
+      id: '/atsihitany_admin'
+      path: '/atsihitany_admin'
+      fullPath: '/atsihitany_admin'
+      preLoaderRoute: typeof Atsihitany_adminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app': {
@@ -618,6 +658,8 @@ const rootRouteChildren: RootRouteChildren = {
   AdminBusRoute: AdminBusRouteWithChildren,
   AdminTrashRoute: AdminTrashRouteWithChildren,
   AppRoute: AppRouteWithChildren,
+  Atsihitany_adminRoute: Atsihitany_adminRoute,
+  Atsihitany_clientRoute: Atsihitany_clientRoute,
   ChauffeurRoute: ChauffeurRouteWithChildren,
   LoginRoute: LoginRoute,
 }

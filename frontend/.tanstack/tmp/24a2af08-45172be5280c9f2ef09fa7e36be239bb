@@ -22,7 +22,6 @@ import { Route as AppSignalerRouteImport } from './routes/app.signaler'
 import { Route as AppProfilRouteImport } from './routes/app.profil'
 import { Route as AppCampagnesRouteImport } from './routes/app.campagnes'
 import { Route as AppBusRouteImport } from './routes/app.bus'
-import { Route as AppAtsihitanyRouteImport } from './routes/app.atsihitany'
 import { Route as AdminTrashStatistiquesRouteImport } from './routes/admin-trash.statistiques'
 import { Route as AdminTrashSignalementsRouteImport } from './routes/admin-trash.signalements'
 import { Route as AdminTrashDashboardRouteImport } from './routes/admin-trash.dashboard'
@@ -35,6 +34,7 @@ import { Route as AdminBusDashboardRouteImport } from './routes/admin-bus.dashbo
 import { Route as AdminBusChauffeursRouteImport } from './routes/admin-bus.chauffeurs'
 import { Route as AdminBusBusRouteImport } from './routes/admin-bus.bus'
 import { Route as AdminBusAtsihitanyRouteImport } from './routes/admin-bus.atsihitany'
+import { Route as AppAppAtsihitany_clientRouteImport } from './routes/app/app.atsihitany_client'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -101,11 +101,6 @@ const AppBusRoute = AppBusRouteImport.update({
   path: '/bus',
   getParentRoute: () => AppRoute,
 } as any)
-const AppAtsihitanyRoute = AppAtsihitanyRouteImport.update({
-  id: '/atsihitany',
-  path: '/atsihitany',
-  getParentRoute: () => AppRoute,
-} as any)
 const AdminTrashStatistiquesRoute = AdminTrashStatistiquesRouteImport.update({
   id: '/statistiques',
   path: '/statistiques',
@@ -166,6 +161,11 @@ const AdminBusAtsihitanyRoute = AdminBusAtsihitanyRouteImport.update({
   path: '/atsihitany',
   getParentRoute: () => AdminBusRoute,
 } as any)
+const AppAppAtsihitany_clientRoute = AppAppAtsihitany_clientRouteImport.update({
+  id: '/app/atsihitany_client',
+  path: '/app/atsihitany_client',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -186,7 +186,6 @@ export interface FileRoutesByFullPath {
   '/admin-trash/dashboard': typeof AdminTrashDashboardRoute
   '/admin-trash/signalements': typeof AdminTrashSignalementsRoute
   '/admin-trash/statistiques': typeof AdminTrashStatistiquesRoute
-  '/app/atsihitany': typeof AppAtsihitanyRoute
   '/app/bus': typeof AppBusRoute
   '/app/campagnes': typeof AppCampagnesRoute
   '/app/profil': typeof AppProfilRoute
@@ -194,6 +193,7 @@ export interface FileRoutesByFullPath {
   '/chauffeur/assurance': typeof ChauffeurAssuranceRoute
   '/chauffeur/mon-bus': typeof ChauffeurMonBusRoute
   '/chauffeur/profil': typeof ChauffeurProfilRoute
+  '/app/app/atsihitany_client': typeof AppAppAtsihitany_clientRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -214,7 +214,6 @@ export interface FileRoutesByTo {
   '/admin-trash/dashboard': typeof AdminTrashDashboardRoute
   '/admin-trash/signalements': typeof AdminTrashSignalementsRoute
   '/admin-trash/statistiques': typeof AdminTrashStatistiquesRoute
-  '/app/atsihitany': typeof AppAtsihitanyRoute
   '/app/bus': typeof AppBusRoute
   '/app/campagnes': typeof AppCampagnesRoute
   '/app/profil': typeof AppProfilRoute
@@ -222,6 +221,7 @@ export interface FileRoutesByTo {
   '/chauffeur/assurance': typeof ChauffeurAssuranceRoute
   '/chauffeur/mon-bus': typeof ChauffeurMonBusRoute
   '/chauffeur/profil': typeof ChauffeurProfilRoute
+  '/app/app/atsihitany_client': typeof AppAppAtsihitany_clientRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -243,7 +243,6 @@ export interface FileRoutesById {
   '/admin-trash/dashboard': typeof AdminTrashDashboardRoute
   '/admin-trash/signalements': typeof AdminTrashSignalementsRoute
   '/admin-trash/statistiques': typeof AdminTrashStatistiquesRoute
-  '/app/atsihitany': typeof AppAtsihitanyRoute
   '/app/bus': typeof AppBusRoute
   '/app/campagnes': typeof AppCampagnesRoute
   '/app/profil': typeof AppProfilRoute
@@ -251,6 +250,7 @@ export interface FileRoutesById {
   '/chauffeur/assurance': typeof ChauffeurAssuranceRoute
   '/chauffeur/mon-bus': typeof ChauffeurMonBusRoute
   '/chauffeur/profil': typeof ChauffeurProfilRoute
+  '/app/app/atsihitany_client': typeof AppAppAtsihitany_clientRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -273,7 +273,6 @@ export interface FileRouteTypes {
     | '/admin-trash/dashboard'
     | '/admin-trash/signalements'
     | '/admin-trash/statistiques'
-    | '/app/atsihitany'
     | '/app/bus'
     | '/app/campagnes'
     | '/app/profil'
@@ -281,6 +280,7 @@ export interface FileRouteTypes {
     | '/chauffeur/assurance'
     | '/chauffeur/mon-bus'
     | '/chauffeur/profil'
+    | '/app/app/atsihitany_client'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -301,7 +301,6 @@ export interface FileRouteTypes {
     | '/admin-trash/dashboard'
     | '/admin-trash/signalements'
     | '/admin-trash/statistiques'
-    | '/app/atsihitany'
     | '/app/bus'
     | '/app/campagnes'
     | '/app/profil'
@@ -309,6 +308,7 @@ export interface FileRouteTypes {
     | '/chauffeur/assurance'
     | '/chauffeur/mon-bus'
     | '/chauffeur/profil'
+    | '/app/app/atsihitany_client'
   id:
     | '__root__'
     | '/'
@@ -329,7 +329,6 @@ export interface FileRouteTypes {
     | '/admin-trash/dashboard'
     | '/admin-trash/signalements'
     | '/admin-trash/statistiques'
-    | '/app/atsihitany'
     | '/app/bus'
     | '/app/campagnes'
     | '/app/profil'
@@ -337,6 +336,7 @@ export interface FileRouteTypes {
     | '/chauffeur/assurance'
     | '/chauffeur/mon-bus'
     | '/chauffeur/profil'
+    | '/app/app/atsihitany_client'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -441,13 +441,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppBusRouteImport
       parentRoute: typeof AppRoute
     }
-    '/app/atsihitany': {
-      id: '/app/atsihitany'
-      path: '/atsihitany'
-      fullPath: '/app/atsihitany'
-      preLoaderRoute: typeof AppAtsihitanyRouteImport
-      parentRoute: typeof AppRoute
-    }
     '/admin-trash/statistiques': {
       id: '/admin-trash/statistiques'
       path: '/statistiques'
@@ -532,6 +525,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBusAtsihitanyRouteImport
       parentRoute: typeof AdminBusRoute
     }
+    '/app/app/atsihitany_client': {
+      id: '/app/app/atsihitany_client'
+      path: '/app/atsihitany_client'
+      fullPath: '/app/app/atsihitany_client'
+      preLoaderRoute: typeof AppAppAtsihitany_clientRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
@@ -580,19 +580,19 @@ const AdminTrashRouteWithChildren = AdminTrashRoute._addFileChildren(
 )
 
 interface AppRouteChildren {
-  AppAtsihitanyRoute: typeof AppAtsihitanyRoute
   AppBusRoute: typeof AppBusRoute
   AppCampagnesRoute: typeof AppCampagnesRoute
   AppProfilRoute: typeof AppProfilRoute
   AppSignalerRoute: typeof AppSignalerRoute
+  AppAppAtsihitany_clientRoute: typeof AppAppAtsihitany_clientRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
-  AppAtsihitanyRoute: AppAtsihitanyRoute,
   AppBusRoute: AppBusRoute,
   AppCampagnesRoute: AppCampagnesRoute,
   AppProfilRoute: AppProfilRoute,
   AppSignalerRoute: AppSignalerRoute,
+  AppAppAtsihitany_clientRoute: AppAppAtsihitany_clientRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)

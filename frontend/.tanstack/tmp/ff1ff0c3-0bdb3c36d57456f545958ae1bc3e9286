@@ -1,0 +1,130 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { Message, getMessages, addMessage } from "@/lib/atsihitany";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+export const Route = createFileRoute("/atsihitany_admin")({
+  component: AdminChat,
+});
+
+function AdminChat() {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [reply, setReply] = useState("");
+  const [selectedUserMsg, setSelectedUserMsg] = useState<string | null>(null);
+
+  // Statistiques simulées
+  const stats = {
+    total: messages.length,
+    new: messages.filter(m => m.from === 'citizen' && Date.now() - m.createdAt < 3600000).length, // dernières 24h
+    inProgress: messages.filter(m => m.from === 'citizen').length - messages.filter(m => m.from === 'admin').length,
+    responseRate: messages.length > 0 ? Math.round((messages.filter(m => m.from === 'admin').length / messages.length) * 100) : 0
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setMessages(getMessages());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  function sendReply() {
+    if (!reply.trim()) return;
+
+    const newMsg: Message = {
+      id: Date.now().toString(),
+      from: "admin",
+      text: reply,
+      createdAt: Date.now(),
+    };
+
+    const updated = addMessage(newMsg);
+    setMessages(updated);
+    setReply("");
+  }
+
+  return (
+    <div className="flex flex-col h-screen bg-gradient-to-br from-[#f4fffc] via-[#f0f9f6] to-white">
+      <div className="p-4 bg-gradient-to-r from-[#3BC1A8] to-[#3A9AFF] text-white font-bold rounded-b-[32px] shadow-lg shadow-[#3BC1A8]/20">
+        Atsihitany - Admin Panel
+      </div>
+
+      {/* Cards de statistiques */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4">
+        <Card className="rounded-[28px] border border-slate-200 shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Requêtes Totales</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.total}</div>
+          </CardContent>
+        </Card>
+
+        <Card className="rounded-[28px] border border-slate-200 shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Nouvelles</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-blue-600">{stats.new}</div>
+          </CardContent>
+        </Card>
+
+        <Card className="rounded-[28px] border border-slate-200 shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">En Cours</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-orange-600">{stats.inProgress}</div>
+          </CardContent>
+        </Card>
+
+        <Card className="rounded-[28px] border border-slate-200 shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Taux de Réponse</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-600">{stats.responseRate}%</div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Chat */}
+      <div className="flex-1 flex flex-col border-t border-slate-200">
+        <div className="flex-1 overflow-y-auto p-4 space-y-3">
+          {messages.map((m) => (
+            <div
+              key={m.id}
+              onClick={() => setSelectedUserMsg(m.id)}
+              className={`flex ${m.from === "admin" ? "justify-end" : "justify-start"}`}
+            >
+              <div
+                className={`inline-block max-w-[70%] w-fit rounded-[28px] px-4 py-3 text-sm leading-relaxed shadow-sm break-words whitespace-pre-wrap cursor-pointer ${
+                  m.from === "admin"
+                    ? "bg-gradient-to-r from-[#3BC1A8] to-[#3A9AFF] text-white"
+                    : "bg-white border border-slate-200 text-slate-900"
+                }`}
+              >
+                {m.text}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="p-3 flex gap-2 border-t bg-white">
+          <input
+            className="flex-1 border rounded-2xl px-4 py-3 focus:border-[#3BC1A8] focus:outline-none"
+            value={reply}
+            onChange={(e) => setReply(e.target.value)}
+            placeholder="Répondre à la population..."
+          />
+          <button
+            onClick={sendReply}
+            className="bg-gradient-to-r from-[#3BC1A8] to-[#3A9AFF] text-white px-5 rounded-2xl transition hover:brightness-110"
+          >
+            Répondre
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}

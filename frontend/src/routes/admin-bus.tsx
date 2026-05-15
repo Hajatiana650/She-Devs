@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet, Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, Bus, ClipboardCheck, Users, BarChart3, LogOut, Sparkles } from "lucide-react";
+import { LayoutDashboard, Bus, ClipboardCheck, Users, BarChart3, LogOut, Sparkles, MessageCircle } from "lucide-react";
 import { useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -8,12 +8,14 @@ export const Route = createFileRoute("/admin-bus")({
   component: AdminBusLayout,
 });
 
+
 const items = [
   { to: "/admin-bus/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/admin-bus/bus", label: "Bus & Lignes", icon: Bus },
   { to: "/admin-bus/visites", label: "Visites", icon: ClipboardCheck },
   { to: "/admin-bus/chauffeurs", label: "Chauffeurs", icon: Users },
   { to: "/admin-bus/statistiques", label: "Statistiques", icon: BarChart3 },
+  { to: "/admin-bus/atsihitany", label: "Atsihitany", icon: MessageCircle },
 ];
 
 function AdminBusLayout() {

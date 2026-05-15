@@ -1,0 +1,144 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState, useRef } from "react";
+import { Send, Bot } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getMessages, Message, addMessage } from "@/lib/atsihitany";
+
+export const Route = createFileRoute("/app/atsihitany_client")({
+  component: CitizenChat,
+});
+
+function CitizenChat() {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [text, setText] = useState("");
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setMessages(getMessages());
+
+    const interval = setInterval(() => {
+      setMessages(getMessages());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Auto scroll to bottom
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  function sendMessage() {
+    if (!text.trim()) return;
+
+    const newMsg: Message = {
+      id: Date.now().toString(),
+      from: "citizen",
+      text,
+      createdAt: Date.now(),
+    };
+
+    const updated = addMessage(newMsg);
+    setMessages(updated);
+    setText("");
+  }
+
+  const stats = {
+    total: messages.length,
+    new: messages.filter((m) => m.from === "citizen" && Date.now() - m.createdAt < 3600000).length,
+    replies: messages.filter((m) => m.from === "admin").length,
+    responseRate:
+      messages.length > 0
+        ? Math.round((messages.filter((m) => m.from === "admin").length / messages.length) * 100)
+        : 0,
+  };
+
+  return (
+    <div className="flex flex-col h-screen bg-slate-50">
+      <div className="p-4 bg-slate-900 text-white font-bold">Atsihitany - Canal Citoyen</div>
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Messages totaux</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.total}</div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Nouveaux</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-blue-600">{stats.new}</div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Réponses</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-orange-600">{stats.replies}</div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Taux de réponse</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-600">{stats.responseRate}%</div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="flex-1 flex flex-col border-t">
+        <div className="flex-1 overflow-y-auto p-4 space-y-3">
+          {messages.map((m) => (
+            <div
+              key={m.id}
+              className={`flex ${m.from === "citizen" ? "justify-end" : "justify-start"}`}
+            >
+              <div
+                className={`inline-block max-w-[70%] w-fit rounded-2xl p-3 text-sm break-words whitespace-pre-wrap cursor-text shadow-sm ${
+                  m.from === "citizen"
+                    ? "bg-slate-800 text-white"
+                    : "bg-white border border-slate-200 text-slate-900"
+                }`}
+              >
+                {m.text}
+                <div className={`text-[10px] mt-2 opacity-70 ${m.from === "citizen" ? "text-right" : "text-left"}`}>
+                  {new Date(m.createdAt).toLocaleTimeString("fr-FR", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </div>
+              </div>
+            </div>
+          ))}
+          <div ref={messagesEndRef} />
+        </div>
+
+        <div className="p-3 flex gap-2 border-t bg-white">
+          <input
+            type="text"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+            placeholder="Écrivez votre requête ou votre question..."
+            className="flex-1 border rounded-xl px-4 py-3 focus:border-[#3BC1A8] focus:outline-none text-sm"
+          />
+          <button
+            onClick={sendMessage}
+            className="bg-slate-900 text-white rounded-xl px-5 py-3 hover:bg-slate-800 transition"
+          >
+            Envoyer
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}

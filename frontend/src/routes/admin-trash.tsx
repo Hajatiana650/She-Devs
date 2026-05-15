@@ -1,5 +1,5 @@
 import { createFileRoute, Outlet, Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, AlertCircle, Calendar, Megaphone, BarChart3, LogOut, Sparkles } from "lucide-react";
+import { LayoutDashboard, AlertCircle, Calendar, Megaphone, BarChart3, MessageCircle, LogOut, Sparkles } from "lucide-react";
 import { useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,7 @@ const items = [
   { to: "/admin-trash/calendrier", label: "Calendrier collecte", icon: Calendar },
   { to: "/admin-trash/campagnes", label: "Campagnes", icon: Megaphone },
   { to: "/admin-trash/statistiques", label: "Statistiques", icon: BarChart3 },
+  { to: "/admin-trash/atsihitany", label: "Atsihitany", icon: MessageCircle },
 ];
 
 function AdminTrashLayout() {
