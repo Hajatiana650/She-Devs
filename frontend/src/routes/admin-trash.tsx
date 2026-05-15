@@ -1,5 +1,15 @@
 import { createFileRoute, Outlet, Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, AlertCircle, Calendar, Megaphone, BarChart3, LogOut, Sparkles } from "lucide-react";
+import { 
+  LayoutDashboard, 
+  AlertCircle, 
+  Calendar, 
+  Megaphone, 
+  BarChart3, 
+  LogOut, 
+  Sparkles,
+  Trash2,
+  ChevronRight
+} from "lucide-react";
 import { useEffect } from "react";
 import { useAuth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
@@ -26,29 +36,26 @@ function AdminTrashLayout() {
   }, [role, navigate]);
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-[#ecfffb] via-[#eef6ff] to-[#f5f3ff]">
-      {/* SIDEBAR DESKTOP MODERNE */}
-      <aside className="hidden w-80 flex-col rounded-r-[40px] border-r border-[#3BC1A8]/15 bg-white/95 shadow-[0_30px_80px_rgba(59,193,168,0.14)] backdrop-blur-xl lg:flex">
-        <div className="border-b border-[#3BC1A8]/10 px-6 py-6">
-          <div className="flex items-center gap-4">
-            <div className="relative flex h-14 w-14 items-center justify-center rounded-3xl bg-gradient-to-br from-[#3BC1A8] via-[#33b7ad] to-[#2f99c3] shadow-lg shadow-[#3BC1A8]/25">
-              <Sparkles className="text-white" size={22} />
-              <div className="absolute inset-0 rounded-3xl bg-white/10" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-semibold text-slate-900">FianaCity</h1>
-              <p className="mt-1 text-sm text-slate-500">Admin Déchets</p>
-            </div>
+    <div className="flex min-h-screen bg-gradient-to-br from-[#ecfffb] via-[#eef6ff] to-[#f5f3ff] font-sans">
+      
+      {/* --- SIDEBAR DESKTOP PREMIUM --- */}
+      <aside className="hidden w-72 flex-col bg-white/70 backdrop-blur-xl border-r border-white py-8 px-5 sticky top-0 h-screen lg:flex transition-all">
+        
+        {/* LOGO SECTION */}
+        <div className="flex items-center gap-3 px-2 mb-10">
+          <div className="size-12 rounded-2xl bg-gradient-to-br from-[#1B254B] to-[#185FA5] flex items-center justify-center shadow-lg shadow-[#185FA5]/20">
+            <Trash2 className="text-white" size={24} />
           </div>
-          <div className="mt-6 rounded-[28px] bg-[#3BC1A8]/5 p-4 text-sm text-[#0f766e] shadow-inner shadow-[#3BC1A8]/10">
-            <p className="font-medium">Bienvenue Admin</p>
-            <p className="mt-2 text-xs leading-5 text-slate-500">
-              Gérez les campagnes de collecte et les signalements.
-            </p>
+          <div className="flex flex-col">
+            <span className="font-[1000] text-[#1B254B] text-xl tracking-tighter leading-none italic">
+              Ny'Agnay<span className="text-[#3BC1A8]"></span>
+            </span>
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-1">Fianarantsoa</span>
           </div>
         </div>
 
-        <nav className="flex-1 px-6 py-6 space-y-4">
+        {/* NAVIGATION */}
+        <nav className="flex-1 space-y-2">
           {items.map((it) => {
             const active = path.startsWith(it.to);
             const Icon = it.icon;
@@ -57,91 +64,93 @@ function AdminTrashLayout() {
               <Link
                 key={it.to}
                 to={it.to}
-                className={`group flex items-center gap-4 rounded-[26px] border px-5 py-4 text-sm font-semibold transition-all duration-300 ${
+                className={`group flex items-center justify-between rounded-2xl px-4 py-3.5 transition-all duration-300 ${
                   active
-                    ? "border-[#3BC1A8] bg-[#3BC1A8]/15 text-slate-900 shadow-lg shadow-[#3BC1A8]/10"
-                    : "border-transparent bg-white text-slate-700 hover:border-[#3BC1A8]/30 hover:bg-[#3BC1A8]/10 hover:text-[#0f766e]"
+                    ? "bg-[#185FA5] text-white shadow-xl shadow-[#185FA5]/20"
+                    : "text-slate-500 hover:bg-white hover:text-[#1B254B] hover:shadow-md"
                 }`}
               >
-                <div className={`flex h-11 w-11 items-center justify-center rounded-2xl transition ${
-                  active ? "bg-[#3BC1A8] text-white" : "bg-[#3BC1A8]/10 text-[#3BC1A8] group-hover:bg-[#3BC1A8]/20"
-                }`}>
-                  <Icon size={18} />
+                <div className="flex items-center gap-4">
+                  <Icon size={20} strokeWidth={active ? 2.5 : 2} />
+                  <span className="text-sm font-black tracking-tight">{it.label}</span>
                 </div>
-                <span>{it.label}</span>
+                {active && <ChevronRight size={14} className="opacity-50" />}
               </Link>
             );
           })}
         </nav>
 
-        <div className="border-t border-[#3BC1A8]/10 px-6 py-5">
+        {/* FOOTER / USER SECTION */}
+        <div className="pt-6 border-t border-white/60">
+          <div className="mb-4 px-4 py-3 bg-white/50 rounded-2xl border border-white/60">
+           
+          </div>
+          
           <Button
             variant="ghost"
-            className="w-full justify-between gap-3 rounded-[26px] border border-[#3BC1A8]/10 bg-[#3BC1A8]/5 px-4 py-3 text-[#0f766e] transition hover:bg-[#3BC1A8]/10"
+            className="w-full justify-start gap-4 rounded-2xl px-4 py-6 text-rose-500 hover:bg-rose-50 hover:text-rose-600 transition-all font-black"
             onClick={() => {
               logout();
               navigate({ to: "/login" });
             }}
           >
-            <span className="flex items-center gap-2">
-              <LogOut size={18} /> Déconnexion
-            </span>
+            <LogOut size={20} strokeWidth={2.5} />
+            <span className="text-sm">Déconnexion</span>
           </Button>
         </div>
       </aside>
 
-      {/* MOBILE HEADER */}
+      {/* --- MOBILE VIEW --- */}
       <div className="flex w-full flex-col lg:hidden">
-        <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-slate-200 bg-white/95 px-4 shadow-sm backdrop-blur-xl">
+        <header className="sticky top-0 z-30 flex h-20 items-center justify-between bg-white/80 px-6 backdrop-blur-lg border-b border-white">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[#3BC1A8] via-[#33b7ad] to-[#2f99c3] text-white">
-              <LayoutDashboard size={20} />
+            <div className="size-10 rounded-xl bg-[#1B254B] flex items-center justify-center">
+              <Trash2 className="text-white" size={18} />
             </div>
-            <div>
-              <h1 className="text-lg font-semibold text-slate-900">FianaCity</h1>
-              <p className="text-xs text-slate-500">Admin Déchets</p>
-            </div>
+            <span className="font-[1000] text-[#1B254B] italic">ECO<span className="text-[#3BC1A8]">TRASH</span></span>
           </div>
-          <button
-            className="rounded-2xl border border-slate-200 bg-white p-2 text-slate-600 transition hover:border-[#3BC1A8]/40 hover:text-[#0f766e]"
+          <Button
+            size="icon"
+            variant="ghost"
+            className="rounded-xl text-rose-500"
             onClick={() => {
               logout();
               navigate({ to: "/login" });
             }}
           >
-            <LogOut size={20} />
-          </button>
+            <LogOut size={22} />
+          </Button>
         </header>
 
-        <nav className="flex border-b border-slate-200 bg-white/95 overflow-x-auto">
+        {/* Navigation Mobile Horizontale */}
+        <nav className="flex bg-white/50 backdrop-blur-md overflow-x-auto px-4 py-2 border-b border-white scrollbar-hide">
           {items.map((it) => {
             const active = path.startsWith(it.to);
             return (
               <Link
                 key={it.to}
                 to={it.to}
-                className={`whitespace-nowrap px-4 py-3 text-center text-sm font-semibold transition ${
+                className={`whitespace-nowrap px-5 py-2.5 rounded-xl text-xs font-black transition-all ${
                   active
-                    ? "border-b-3 border-[#3BC1A8] text-[#0f766e]"
-                    : "text-slate-500 hover:text-[#137f76]"
+                    ? "bg-[#185FA5] text-white shadow-lg"
+                    : "text-slate-500 hover:text-[#1B254B]"
                 }`}
               >
-                {it.label}
+                {it.label.toUpperCase()}
               </Link>
             );
           })}
         </nav>
 
-        <main className="flex-1 px-4 py-4">
+        <main className="flex-1 p-6">
           <Outlet />
         </main>
       </div>
 
-      {/* MAIN CONTENT DESKTOP */}
-      <main className="hidden flex-1 lg:block px-8 py-8">
+      {/* --- MAIN CONTENT DESKTOP --- */}
+      <main className="hidden flex-1 lg:block p-10 overflow-y-auto">
         <Outlet />
       </main>
     </div>
   );
 }
-

@@ -14,13 +14,13 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "SmartFianar — Plateforme Smart City de Fianarantsoa" },
+      { title: "Ny'Agnay — Plateforme Ny'Agnay de Fianarantsoa" },
       {
         name: "description",
         content:
-          "SmartFianar : gestion intelligente des transports, des déchets et de la communication citoyenne pour transformer Fianarantsoa en Smart City.",
+          "Ny'Agnay : gestion intelligente des transports, des déchets et de la communication citoyenne pour transformer Fianarantsoa en Ny'Agnay.",
       },
-      { property: "og:title", content: "SmartFianar — Smart City de Fianarantsoa" },
+      { property: "og:title", content: "Ny'Agnay — Ny'Agnay de Fianarantsoa" },
       {
         property: "og:description",
         content: "Transports, déchets et canal citoyen — une seule plateforme intelligente.",
@@ -41,9 +41,9 @@ function Landing() {
               <Sparkles className="h-5 w-5 text-white" />
             </div>
             <div className="leading-tight">
-              <div className="text-sm font-bold">SmartFianar</div>
+              <div className="text-sm font-bold">Ny'Agnay</div>
               <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                Smart City · Fianarantsoa
+                Ny'Agnay · Fianarantsoa
               </div>
             </div>
           </Link>
@@ -79,11 +79,11 @@ function Landing() {
               Plateforme intelligente · Fianarantsoa
             </div>
             <h1 className="mt-6 text-5xl font-bold leading-[1.05] tracking-tight md:text-6xl">
-              Transformer Fianarantsoa en{" "}
-              <span className="text-gradient-brand">vraie Smart City</span>.
+              Pourquoi choisir
+              <span className="text-gradient-brand"> Ny'Agnay?</span>
             </h1>
             <p className="mt-6 max-w-xl text-lg text-muted-foreground">
-              SmartFianar centralise la circulation, les transports publics, les déchets et la
+              Ny'Agnay centralise la circulation, les transports publics, les déchets et la
               voix des citoyens dans un système unifié, temps réel et intuitif.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -124,7 +124,7 @@ function Landing() {
                   <div className="h-2.5 w-2.5 rounded-full bg-warning/80" />
                   <div className="h-2.5 w-2.5 rounded-full bg-success" />
                 </div>
-                <div className="text-xs font-medium text-muted-foreground">smartfianar.app</div>
+                <div className="text-xs font-medium text-muted-foreground">Ny'Agnay.app</div>
               </div>
               <div className="mt-4 overflow-hidden rounded-2xl bg-gradient-hero p-6 text-white">
                 <div className="flex items-center gap-2 text-xs uppercase tracking-wider opacity-80">
@@ -132,10 +132,10 @@ function Landing() {
                 </div>
                 <div className="mt-2 text-2xl font-bold">12 lignes actives · 87 bus en circulation</div>
                 <div className="mt-6 grid grid-cols-3 gap-3">
-                  {["L1", "L2", "L3"].map((l) => (
+                  {["28", "38", "40"].map((l) => (
                     <div key={l} className="rounded-xl bg-white/15 p-3 backdrop-blur">
                       <div className="text-[10px] uppercase opacity-80">Ligne {l}</div>
-                      <div className="text-lg font-bold">{["3", "5", "2"][["L1","L2","L3"].indexOf(l)]} min</div>
+                      <div className="text-lg font-bold">{["3", "5", "2"][["28","40","38"].indexOf(l)]} min</div>
                     </div>
                   ))}
                 </div>
@@ -160,10 +160,7 @@ function Landing() {
                 <div className="flex h-10 w-10 animate-pulse-ring items-center justify-center rounded-full bg-primary text-primary-foreground">
                   <MapPin className="h-5 w-5" />
                 </div>
-                <div>
-                  <div className="text-xs text-muted-foreground">Bus L2 · Antarandolo</div>
-                  <div className="text-sm font-semibold">Arrivée dans 2 min</div>
-                </div>
+               
               </div>
             </div>
           </div>
@@ -249,10 +246,10 @@ function Landing() {
       {/* CTA */}
       <section id="impact" className="mx-auto max-w-7xl px-6 py-24 text-center">
         <h2 className="mx-auto max-w-3xl text-4xl font-bold tracking-tight md:text-5xl">
-          Prêt à découvrir une <span className="text-gradient-brand">Smart City</span> en action ?
+          Prêt à découvrir  <span className="text-gradient-brand">Ny'Agnay</span> en action ?
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
-          Plongez dans le dashboard interactif et explorez les trois modules de SmartFianar.
+          Plongez dans le dashboard interactif et explorez les trois modules de Ny'Agnay.
         </p>
         <Link
           to="/app"
@@ -268,7 +265,7 @@ function Landing() {
             <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-brand">
               <Sparkles className="h-4 w-4 text-white" />
             </div>
-            <span>© 2026 SmartFianar — Fianarantsoa Smart City</span>
+            <span>© 2026 Ny'Agnay — Fianarantsoa Ny'Agnay</span>
           </div>
           <div className="flex gap-6">
             <a href="#modules" className="hover:text-foreground">Modules</a>

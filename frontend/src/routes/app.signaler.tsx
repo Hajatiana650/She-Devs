@@ -98,7 +98,7 @@ function Signaler() {
                 ease: "easeInOut" // Mouvement fluide
               }}
             > 
-              un problème
+              déchets 
             </motion.span>
           </motion.h1>
           <p className="mt-2 text-gray-600">Aidez-nous à garder Fianarantsoa propre</p>

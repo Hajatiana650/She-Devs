@@ -101,7 +101,6 @@ function Profil() {
         <div className="mt-12 text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900 text-white rounded-full text-[10px] font-black uppercase tracking-tighter">
                 <Zap size={12} className="text-[#3BC1A8] fill-[#3BC1A8]" />
-                Version 2.4.0 High-Performance
             </div>
         </div>
       </div>

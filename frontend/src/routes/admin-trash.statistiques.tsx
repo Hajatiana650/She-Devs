@@ -1,44 +1,30 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, CartesianGrid, Legend } from "recharts";
-import { TrendingUp, Target, Award } from "lucide-react";
+import { 
+  LineChart, 
+  Line, 
+  BarChart, 
+  Bar, 
+  XAxis, 
+  YAxis, 
+  ResponsiveContainer, 
+  Tooltip, 
+  CartesianGrid, 
+  Cell 
+} from "recharts";
+import { TrendingUp, Target, Award, BarChart3, ChevronRight } from "lucide-react";
 
 export const Route = createFileRoute("/admin-trash/statistiques")({
   component: Stats,
 });
 
+// Données plus basses (simulation de début de service)
 const monthly = [
-  { mois: "Jan", signalements: 42, traites: 38 },
-  { mois: "Fév", signalements: 51, traites: 47 },
-  { mois: "Mar", signalements: 38, traites: 36 },
-  { mois: "Avr", signalements: 60, traites: 54 },
-  { mois: "Mai", signalements: 47, traites: 41 },
+  { mois: "Jan", signalements: 12, traites: 10 },
+  { mois: "Fév", signalements: 18, traites: 15 },
+  { mois: "Mar", signalements: 14, traites: 14 },
+  { mois: "Avr", signalements: 22, traites: 19 },
+  { mois: "Mai", signalements: 19, traites: 18 },
 ];
-
-function StatCard({ label, value, trend, icon: Icon, color }: { 
-  label: string; 
-  value: string; 
-  trend: string; 
-  icon: any; 
-  color: string;
-}) {
-  return (
-    <div className="rounded-3xl border border-white/60 bg-white/80 p-6 shadow-sm backdrop-blur-xl transition-all hover:shadow-xl hover:-translate-y-1">
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm uppercase tracking-widest text-slate-500">{label}</p>
-          <p className="text-4xl font-bold tracking-tighter text-slate-800 mt-2">{value}</p>
-        </div>
-        <div className={`rounded-2xl p-4 ${color}`}>
-          <Icon size={32} className="text-white" />
-        </div>
-      </div>
-      <div className="mt-4 flex items-center gap-2 text-emerald-600 text-sm font-medium">
-        <TrendingUp size={18} />
-        {trend}
-      </div>
-    </div>
-  );
-}
 
 function Stats() {
   const totalSignalements = monthly.reduce((acc, m) => acc + m.signalements, 0);
@@ -46,125 +32,141 @@ function Stats() {
   const tauxTraitement = Math.round((totalTraites / totalSignalements) * 100);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#f4fffc] via-[#f0f9f6] to-white p-4 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-10">
-        {/* Header */}
-        <div className="text-center">
-          <h1 className="bg-gradient-to-r from-[#3BC1A8] to-[#3A9AFF] bg-clip-text text-4xl md:text-5xl font-extrabold text-transparent">
-            Statistiques Déchets
+    <div className="space-y-10 animate-in fade-in duration-500">
+      
+      {/* HEADER STATS */}
+      <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
+        <div className="flex flex-col items-center lg:items-start text-center lg:text-left">
+          <h1 className="text-4xl font-[1000] tracking-tight text-[#1B254B]">
+            Analyse des <span className="text-[#185FA5]">Performances</span>
           </h1>
-          <p className="mt-3 text-lg text-slate-600">
-            Analyse des performances du service de collecte
-          </p>
+          <div className="h-1.5 w-16 bg-[#3BC1A8] mt-2 rounded-full" />
         </div>
 
-        {/* KPI Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          <StatCard 
-            label="Total Signalements" 
-            value={totalSignalements.toString()} 
-            trend="+18% ce mois" 
-            icon={Target} 
-            color="bg-[#3BC1A8]" 
-          />
-          <StatCard 
-            label="Signalements traités" 
-            value={totalTraites.toString()} 
-            trend="+24% ce mois" 
-            icon={Award} 
-            color="bg-emerald-600" 
-          />
-          <StatCard 
-            label="Taux de traitement" 
-            value={`${tauxTraitement}%`} 
-            trend="Excellent" 
-            icon={TrendingUp} 
-            color="bg-teal-600" 
-          />
-          <StatCard 
-            label="Moyenne mensuelle" 
-            value="47.6" 
-            trend="Stable" 
-            icon={Target} 
-            color="bg-[#3A9AFF]" 
-          />
+        <div className="flex items-center gap-3 bg-white/60 backdrop-blur-md p-2 rounded-2xl border border-white shadow-sm">
+            <div className="px-4 py-1.5 bg-[#3BC1A8]/10 text-[#3BC1A8] rounded-xl text-[10px] font-black tracking-widest uppercase">
+                Période : 2026
+            </div>
+            <div className="h-4 w-px bg-slate-200" />
+            <BarChart3 size={18} className="text-[#1B254B] mr-2" />
         </div>
+      </div>
 
-        {/* Charts */}
-        <div className="grid gap-8 lg:grid-cols-2">
-          {/* Line Chart */}
-          <div className="rounded-3xl border border-white/60 bg-white/80 p-8 shadow-sm backdrop-blur-xl">
-            <h2 className="text-2xl font-semibold text-slate-800 mb-6">
-              Évolution des signalements
-            </h2>
-            <div className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={monthly}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                  <XAxis dataKey="mois" fontSize={13} tickLine={false} />
-                  <YAxis fontSize={13} tickLine={false} />
-                  <Tooltip 
-                    contentStyle={{
-                      backgroundColor: "#fff",
-                      border: "none",
-                      borderRadius: "12px",
-                      boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1)"
-                    }}
-                  />
-                  <Legend />
-                  <Line 
-                    type="monotone" 
-                    dataKey="signalements" 
-                    stroke="#3BC1A8" 
-                    strokeWidth={4} 
-                    dot={{ fill: "#3BC1A8", r: 6 }}
-                    activeDot={{ r: 8 }}
-                    name="Signalements"
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="traites" 
-                    stroke="#3A9AFF" 
-                    strokeWidth={4} 
-                    strokeDasharray="6 3"
-                    dot={{ fill: "#3A9AFF", r: 6 }}
-                    name="Traités"
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
+      {/* KPI CARDS (Style Dashboard Admin) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <StatCard 
+          label="Signalements" 
+          value={totalSignalements} 
+          trend="+5% vs m-1" 
+          icon={Target} 
+          color="#185FA5" 
+        />
+        <StatCard 
+          label="Traités" 
+          value={totalTraites} 
+          trend="+12% efficacité" 
+          icon={Award} 
+          color="#3BC1A8" 
+        />
+        <StatCard 
+          label="Taux Succès" 
+          value={`${tauxTraitement}%`} 
+          trend="Stable" 
+          icon={TrendingUp} 
+          color="#f59e0b" 
+        />
+        <StatCard 
+          label="Moyenne" 
+          value={(totalSignalements / monthly.length).toFixed(1)} 
+          trend="Basse" 
+          icon={BarChart3} 
+          color="#1B254B" 
+        />
+      </div>
 
-          {/* Bar Chart */}
-          <div className="rounded-3xl border border-white/60 bg-white/80 p-8 shadow-sm backdrop-blur-xl">
-            <h2 className="text-2xl font-semibold text-slate-800 mb-6">
-              Volume mensuel de signalements
-            </h2>
-            <div className="h-80">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={monthly}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                  <XAxis dataKey="mois" fontSize={13} tickLine={false} />
-                  <YAxis fontSize={13} tickLine={false} />
-                  <Tooltip 
-                    contentStyle={{
-                      backgroundColor: "#fff",
-                      border: "none",
-                      borderRadius: "12px",
-                      boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1)"
-                    }}
-                  />
-                  <Bar 
-                    dataKey="signalements" 
-                    fill="#3BC1A8" 
-                    radius={[12, 12, 0, 0]} 
-                    name="Signalements"
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
+      {/* GRAPHIQUES SECTION */}
+      <div className="grid gap-8 lg:grid-cols-2">
+        
+        {/* Line Chart : Évolution */}
+        <div className="bg-white/70 backdrop-blur-lg rounded-[2.5rem] p-8 shadow-xl shadow-[#1B254B]/5 border border-white">
+          <h3 className="text-xl font-black text-[#1B254B] mb-8">Flux de Signalements</h3>
+          <div className="h-72">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={monthly}>
+                <CartesianGrid strokeDasharray="0" vertical={false} stroke="#e2e8f0" />
+                <XAxis dataKey="mois" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12, fontWeight: 700}} dy={10} />
+                <YAxis axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12, fontWeight: 700}} />
+                <Tooltip 
+                  contentStyle={{borderRadius: '20px', border: 'none', boxShadow: '0 20px 40px rgba(0,0,0,0.05)'}}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="signalements" 
+                  stroke="#185FA5" 
+                  strokeWidth={4} 
+                  dot={{ fill: "#185FA5", r: 6, strokeWidth: 2, stroke: "#fff" }}
+                  activeDot={{ r: 8, strokeWidth: 0 }}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="traites" 
+                  stroke="#3BC1A8" 
+                  strokeWidth={4} 
+                  strokeDasharray="8 4"
+                  dot={{ fill: "#3BC1A8", r: 4 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
         </div>
+
+        {/* Bar Chart : Volume */}
+        <div className="bg-white/70 backdrop-blur-lg rounded-[2.5rem] p-8 shadow-xl shadow-[#1B254B]/5 border border-white">
+          <h3 className="text-xl font-black text-[#1B254B] mb-8">Volume Mensuel</h3>
+          <div className="h-72">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={monthly}>
+                <CartesianGrid strokeDasharray="0" vertical={false} stroke="#e2e8f0" />
+                <XAxis dataKey="mois" axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12, fontWeight: 700}} dy={10} />
+                <YAxis axisLine={false} tickLine={false} tick={{fill: '#94a3b8', fontSize: 12, fontWeight: 700}} />
+                <Tooltip cursor={{fill: '#f1f5f9'}} contentStyle={{borderRadius: '20px', border: 'none'}} />
+                <Bar dataKey="signalements" radius={[10, 10, 10, 10]} barSize={35}>
+                  {monthly.map((_, index) => (
+                    <Cell key={index} fill={index === 3 ? '#3BC1A8' : '#185FA5'} className="hover:opacity-80 transition-opacity cursor-pointer" />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function StatCard({ label, value, trend, icon: Icon, color }: { 
+  label: string; 
+  value: string | number; 
+  trend: string; 
+  icon: any; 
+  color: string;
+}) {
+  return (
+    <div className="bg-white/80 backdrop-blur-md rounded-[2rem] p-6 shadow-xl shadow-[#1B254B]/5 border border-white hover:scale-[1.02] transition-all group">
+      <div className="flex items-center justify-between mb-4">
+        <div 
+          className="size-12 rounded-2xl flex items-center justify-center shrink-0 shadow-inner"
+          style={{ backgroundColor: `${color}15`, color: color }}
+        >
+          <Icon size={24} strokeWidth={2.5} />
+        </div>
+        <div className="px-3 py-1 bg-emerald-50 text-emerald-600 rounded-full text-[10px] font-black italic">
+          {trend}
+        </div>
+      </div>
+      <div>
+        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{label}</p>
+        <h4 className="text-3xl font-[1000] text-[#1B254B] tracking-tight">{value}</h4>
       </div>
     </div>
   );
