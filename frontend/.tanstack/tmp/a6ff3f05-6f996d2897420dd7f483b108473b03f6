@@ -1,0 +1,189 @@
+import { createFileRoute } from "@tanstack/react-router";
+
+import { Bus, Recycle, User, Lock, Sparkles } from "lucide-react";
+import { useState } from "react";
+import { motion } from "framer-motion";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+import { type Role } from "@/lib/auth";
+import { useLogin } from "@/hooks/useLogin";
+
+export const Route = createFileRoute("/")({
+  component: LoginPage,
+});
+
+function LoginPage() {
+  const { login, isPending, error } = useLogin();
+
+  const [role, setRoleVal] = useState<Role>("POPULATION");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handle = (e: React.FormEvent) => {
+    e.preventDefault();
+    login({ role, email, password });
+  };
+
+  return (
+    <div className="min-h-screen grid md:grid-cols-3 bg-gradient-to-br from-background via-background to-muted/30">
+
+      {/* LEFT - BUS (Ny'Agnay style) */}
+      <motion.div
+        initial={{ opacity: 0, x: -30 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.6 }}
+        className="hidden md:flex flex-col items-center justify-center bg-gradient-to-br from-primary/90 to-primary text-white p-10 relative overflow-hidden"
+      >
+        <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_top,white,transparent)]" />
+
+        <motion.div
+          initial={{ scale: 0.8 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 0.2 }}
+          className="flex flex-col items-center"
+        >
+          <Bus size={80} strokeWidth={1.5} />
+          <h2 className="mt-6 text-3xl font-bold text-center">
+            Ny’Agnay Transport
+          </h2>
+
+          <p className="mt-2 text-center text-white/80">
+            Suivi intelligent des bus en temps réel
+          </p>
+        </motion.div>
+      </motion.div>
+
+      {/* CENTER - LOGIN CARD */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="flex items-center justify-center p-6"
+      >
+        <motion.div
+          whileHover={{ scale: 1.01 }}
+          className="w-full max-w-md rounded-2xl border bg-card shadow-xl p-8 backdrop-blur"
+        >
+          {/* Header Ny'Agnay */}
+          <div className="text-center mb-6">
+            <div className="flex justify-center">
+              <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold">
+                <Sparkles size={14} />
+                Ny’Agnay Platform
+              </div>
+            </div>
+
+            <h1 className="mt-4 text-3xl font-bold tracking-tight">
+              Connexion
+            </h1>
+
+            <p className="text-sm text-muted-foreground mt-1">
+              Accédez à votre espace intelligent
+            </p>
+          </div>
+
+          <form onSubmit={handle} className="space-y-4">
+
+            {/* EMAIL */}
+            <div className="space-y-2">
+              <Label>Email</Label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                <Input
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="pl-9 focus:ring-2 focus:ring-primary/30"
+                  placeholder="email@example.com"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* PASSWORD */}
+            <div className="space-y-2">
+              <Label>Mot de passe</Label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                <Input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="pl-9 focus:ring-2 focus:ring-primary/30"
+                  placeholder="********"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* ROLE */}
+            <div className="space-y-2">
+              <Label>Je suis</Label>
+              <Select value={role} onValueChange={(v) => setRoleVal(v as Role)}>
+                <SelectTrigger className="focus:ring-2 focus:ring-primary/30">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="POPULATION">Citoyen</SelectItem>
+                  <SelectItem value="CHAUFFEUR">Chauffeur</SelectItem>
+                  <SelectItem value="ADMIN_BUS">Admin Transport</SelectItem>
+                  <SelectItem value="ADMIN_TRASH">Admin Déchets</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* ERROR */}
+            {error && (
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-sm text-red-500"
+              >
+                {error}
+              </motion.p>
+            )}
+
+            {/* BUTTON */}
+            <Button
+              type="submit"
+              className="w-full bg-primary hover:bg-primary/90 transition-all"
+              size="lg"
+              disabled={isPending}
+            >
+              {isPending ? "Connexion..." : "Se connecter"}
+            </Button>
+
+            <p className="text-center text-xs text-muted-foreground">
+              Plateforme Ny’Agnay · Fianarantsoa
+            </p>
+          </form>
+        </motion.div>
+      </motion.div>
+
+      {/* RIGHT - WASTE (Ny'Agnay style second module) */}
+      <motion.div
+        initial={{ opacity: 0, x: 30 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.6 }}
+        className="hidden lg:flex flex-col items-center justify-center bg-gradient-to-br from-emerald-500 to-emerald-700 text-white p-10"
+      >
+        <Recycle size={80} strokeWidth={1.5} />
+        <h2 className="mt-6 text-3xl font-bold text-center">
+          Ville propre & intelligente
+        </h2>
+        <p className="mt-2 text-center text-white/80">
+          Gestion des déchets et signalements citoyens
+        </p>
+      </motion.div>
+    </div>
+  );
+}
