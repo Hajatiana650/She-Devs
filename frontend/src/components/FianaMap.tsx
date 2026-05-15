@@ -45,14 +45,54 @@ interface FianaMapProps {
   zoom?: number;
   className?: string;
   children?: ReactNode;
+  mapStyle?: "voyager" | "positron" | "stamen" | "osm";
 }
 
-export function FianaMap({ center = FIANA_CENTER, zoom = 14, className = "h-full w-full", children }: FianaMapProps) {
+const mapStyles = {
+  voyager: {
+    url: "https://{s}.basemaps.cartocdn.com/rastered/voyager/{z}/{x}/{y}{r}.png",
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    maxZoom: 20,
+  },
+  positron: {
+    url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    maxZoom: 20,
+  },
+  stamen: {
+    url: "https://stamen-tiles-{s}.a.ssl.fastly.net/terrain/{z}/{x}/{y}{r}.png",
+    attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>',
+    maxZoom: 18,
+  },
+  osm: {
+    url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    maxZoom: 19,
+  },
+};
+
+export function FianaMap({ center = FIANA_CENTER, zoom = 14, className = "", children, mapStyle = "voyager" }: FianaMapProps) {
+  const style = mapStyles[mapStyle];
+
   return (
-    <MapContainer center={center} zoom={zoom} className={className} scrollWheelZoom={false}>
+    <MapContainer
+      center={center}
+      zoom={zoom}
+      className={className}
+      scrollWheelZoom={false}
+      style={{ height: '100%', width: '100%', display: 'block', position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}
+      whenReady={() => {
+        // Force re-render after map is ready
+        setTimeout(() => {
+          window.dispatchEvent(new Event('resize'));
+        }, 100);
+      }}
+    >
+      {/* Sélectionner le style de carte */}
       <TileLayer
-        attribution='&copy; OpenStreetMap'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution={style.attribution}
+        url={style.url}
+        maxZoom={style.maxZoom}
       />
       {children}
     </MapContainer>
