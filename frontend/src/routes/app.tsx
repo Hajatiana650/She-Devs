@@ -1,8 +1,8 @@
 import { createFileRoute, Outlet, Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { Bus, AlertTriangle, Megaphone, User, BarChart3 } from "lucide-react";
+import { Bus, AlertTriangle, Megaphone, User, BarChart3, LogOut, Sparkles, MessageCircle } from "lucide-react";
 import { useEffect } from "react";
 import { useAuth } from "@/lib/auth";
-import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/app")({
   component: AppLayout,
@@ -19,10 +19,12 @@ const adminTabs = [
   { to: "/app/admin", label: "Dashboard", icon: BarChart3 },
   { to: "/app/bus", label: "Bus", icon: Bus },
   { to: "/app/profil", label: "Profil", icon: User },
+  { to: "/app/atsihitany", label: "Messages", icon: MessageCircle },
 ];
 
+
 function AppLayout() {
-  const { role } = useAuth();
+  const { role, logout } = useAuth();
   const navigate = useNavigate();
   const tabs = role === "ADMIN" ? adminTabs : citizenTabs;
 
@@ -33,18 +35,104 @@ function AppLayout() {
   const path = useRouterState({ select: (s) => s.location.pathname });
 
   return (
-    <div className="flex min-h-screen bg-background">
-      {/* SIDEBAR - Fixed on Desktop */}
-      <aside className="sticky top-0 hidden h-screen w-72 flex-col border-r bg-card/50 backdrop-blur-xl md:flex">
-        {/* Logo Section */}
-        <div className="flex h-20 items-center px-8">
-          <h1 className="text-2xl font-bold bg-gradient-brand bg-clip-text text-transparent">
-            Ny'Agnay
-          </h1>
+    <div className="flex min-h-screen bg-gradient-to-br from-[#ecfffb] via-[#eef6ff] to-[#f5f3ff]">
+
+      {/* SIDEBAR DESKTOP MODERNE */}
+      <aside className="hidden w-80 flex-col rounded-r-[40px] border-r border-[#3BC1A8]/15 bg-white/95 shadow-[0_30px_80px_rgba(59,193,168,0.14)] backdrop-blur-xl md:flex">
+        <div className="border-b border-[#3BC1A8]/10 px-6 py-6">
+          <div className="flex items-center gap-4">
+            <div className="relative flex h-14 w-14 items-center justify-center rounded-3xl bg-gradient-to-br from-[#3BC1A8] via-[#33b7ad] to-[#2f99c3] shadow-lg shadow-[#3BC1A8]/25">
+              <Sparkles className="text-white" size={22} />
+              <div className="absolute inset-0 rounded-3xl bg-white/10" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-semibold text-slate-900">FianaCity</h1>
+              <p className="mt-1 text-sm text-slate-500">{role === "ADMIN" ? "Espace admin" : "Espace citoyen"}</p>
+            </div>
+          </div>
+          <div className="mt-6 rounded-[28px] bg-[#3BC1A8]/5 p-4 text-sm text-[#0f766e] shadow-inner shadow-[#3BC1A8]/10">
+            <p className="font-medium">Bienvenue {role === "ADMIN" ? "Admin" : "citoyen"}</p>
+            <p className="mt-2 text-xs leading-5 text-slate-500">
+              {role === "ADMIN" 
+                ? "Gérez les ressources et les utilisateurs." 
+                : "Accédez aux bus, signalements, campagnes et vos messages."}
+            </p>
+          </div>
         </div>
 
-        {/* Navigation Links */}
-        <nav className="flex-1 space-y-2 px-4 py-6">
+        <nav className="flex-1 px-6 py-6 space-y-4">
+          {tabs.map((it) => {
+            const active = path.startsWith(it.to);
+            const Icon = it.icon;
+
+            return (
+              <Link
+                key={it.to}
+                to={it.to}
+                className={`group flex items-center gap-4 rounded-[26px] border px-5 py-4 text-sm font-semibold transition-all duration-300 ${
+                  active
+                    ? "border-[#3BC1A8] bg-[#3BC1A8]/15 text-slate-900 shadow-lg shadow-[#3BC1A8]/10"
+                    : "border-transparent bg-white text-slate-700 hover:border-[#3BC1A8]/30 hover:bg-[#3BC1A8]/10 hover:text-[#0f766e]"
+                }`}
+              >
+                <div className={`flex h-11 w-11 items-center justify-center rounded-2xl transition ${
+                  active ? "bg-[#3BC1A8] text-white" : "bg-[#3BC1A8]/10 text-[#3BC1A8] group-hover:bg-[#3BC1A8]/20"
+                }`}>
+                  <Icon size={18} />
+                </div>
+                <span>{it.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="border-t border-[#3BC1A8]/10 px-6 py-5">
+          <Button
+            variant="ghost"
+            className="w-full justify-between gap-3 rounded-[26px] border border-[#3BC1A8]/10 bg-[#3BC1A8]/5 px-4 py-3 text-[#0f766e] transition hover:bg-[#3BC1A8]/10"
+            onClick={() => {
+              logout();
+              navigate({ to: "/login" });
+            }}
+          >
+            <span className="flex items-center gap-2">
+              <LogOut size={18} /> Déconnexion
+            </span>
+          </Button>
+        </div>
+      </aside>
+
+      {/* MOBILE HEADER */}
+      <div className="flex w-full flex-col md:hidden">
+        <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-[#3BC1A8]/10 bg-white/70 px-4 backdrop-blur-xl">
+          <div className="flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[#3BC1A8] via-[#33b7ad] to-[#2f99c3] text-white">
+              <Sparkles size={20} />
+            </div>
+            <div>
+              <h1 className="text-lg font-semibold text-slate-900">FianaCity</h1>
+              <p className="text-xs text-slate-500">{role === "ADMIN" ? "Admin" : "Citoyen"}</p>
+            </div>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-[#3BC1A8] hover:bg-[#3BC1A8]/10"
+            onClick={() => {
+              logout();
+              navigate({ to: "/login" });
+            }}
+          >
+            <LogOut size={18} />
+          </Button>
+        </header>
+
+        <main className="flex-1">
+          <Outlet />
+        </main>
+
+        {/* MOBILE BOTTOM NAV */}
+        <nav className="fixed bottom-0 left-0 right-0 z-30 grid bg-white/95 backdrop-blur-xl border-t" style={{gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))`}}>
           {tabs.map((t) => {
             const active = path.startsWith(t.to);
             const Icon = t.icon;
@@ -52,80 +140,24 @@ function AppLayout() {
               <Link
                 key={t.to}
                 to={t.to}
-                className={`group relative flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all ${
-                  active 
-                    ? "bg-gradient-brand text-white shadow-glow" 
-                    : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                className={`flex flex-col items-center justify-center gap-0.5 py-2.5 text-xs transition-colors ${
+                  active ? "text-[#3BC1A8]" : "text-slate-500"
                 }`}
               >
                 <Icon size={20} strokeWidth={active ? 2.5 : 2} />
-                <span>{t.label}</span>
-                
-                {active && (
-                  <motion.div 
-                    layoutId="activeTab"
-                    className="absolute inset-0 z-[-1] rounded-xl bg-gradient-brand"
-                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                  />
-                )}
+                <span className={active ? "font-semibold" : ""}>{t.label}</span>
               </Link>
             );
           })}
         </nav>
-
-        {/* User Footer Section */}
-        <div className="border-t p-6">
-          <div className="flex items-center gap-3 rounded-2xl bg-secondary/50 p-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-brand text-white font-bold">
-              {role?.[0]?.toUpperCase() || "U"}
-            </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-semibold truncate">Utilisateur</span>
-              <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                {role || "Citoyen"}
-              </span>
-            </div>
-          </div>
-        </div>
-      </aside>
-
-      {/* MOBILE HEADER (Visible uniquement sur mobile) */}
-      <div className="flex flex-1 flex-col">
-        <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b bg-card/80 px-6 backdrop-blur-md md:hidden">
-          <h1 className="text-xl font-bold text-gradient-brand">Ny'Agnay</h1>
-          <div className="h-8 w-8 rounded-full bg-gradient-brand" />
-        </header>
-
-        {/* MAIN CONTENT AREA */}
-        <main className="flex-1 p-4 md:p-8 relative">
-           {/* Glow subtil en arrière-plan */}
-           <div className="pointer-events-none absolute -top-24 right-0 h-[400px] w-[400px] rounded-full bg-gradient-brand opacity-[0.03] blur-[100px]" />
-           
-           <div className="relative mx-auto max-w-5xl">
-              <Outlet />
-           </div>
-        </main>
       </div>
 
-      {/* MOBILE NAV (Optionnel : si tu veux garder la barre en bas sur téléphone) */}
-      <nav className="fixed bottom-0 left-0 right-0 z-30 grid grid-cols-4 border-t bg-card/90 backdrop-blur-lg md:hidden">
-        {tabs.map((t) => {
-          const active = path.startsWith(t.to);
-          const Icon = t.icon;
-          return (
-            <Link
-              key={t.to}
-              to={t.to}
-              className={`flex flex-col items-center justify-center py-3 text-[10px] transition-colors ${
-                active ? "text-primary" : "text-muted-foreground"
-              }`}
-            >
-              <Icon size={18} />
-              <span className="mt-1">{t.label.split(' ')[0]}</span>
-            </Link>
-          );
-        })}
-      </nav>
+      {/* DESKTOP MAIN CONTENT */}
+      <div className="hidden flex-1 flex-col md:flex">
+        <main className="flex-1 p-8">
+          <Outlet />
+        </main>
+      </div>
     </div>
   );
 }

@@ -22,7 +22,7 @@ import { Route as AppSignalerRouteImport } from './routes/app.signaler'
 import { Route as AppProfilRouteImport } from './routes/app.profil'
 import { Route as AppCampagnesRouteImport } from './routes/app.campagnes'
 import { Route as AppBusRouteImport } from './routes/app.bus'
-import { Route as AppAtsihitanyRouteImport } from './routes/app.atsihitany'
+import { Route as AppAtsihitany_clientRouteImport } from './routes/app.atsihitany_client'
 import { Route as AdminTrashStatistiquesRouteImport } from './routes/admin-trash.statistiques'
 import { Route as AdminTrashSignalementsRouteImport } from './routes/admin-trash.signalements'
 import { Route as AdminTrashDashboardRouteImport } from './routes/admin-trash.dashboard'
@@ -101,9 +101,9 @@ const AppBusRoute = AppBusRouteImport.update({
   path: '/bus',
   getParentRoute: () => AppRoute,
 } as any)
-const AppAtsihitanyRoute = AppAtsihitanyRouteImport.update({
-  id: '/atsihitany',
-  path: '/atsihitany',
+const AppAtsihitany_clientRoute = AppAtsihitany_clientRouteImport.update({
+  id: '/atsihitany_client',
+  path: '/atsihitany_client',
   getParentRoute: () => AppRoute,
 } as any)
 const AdminTrashStatistiquesRoute = AdminTrashStatistiquesRouteImport.update({
@@ -186,7 +186,7 @@ export interface FileRoutesByFullPath {
   '/admin-trash/dashboard': typeof AdminTrashDashboardRoute
   '/admin-trash/signalements': typeof AdminTrashSignalementsRoute
   '/admin-trash/statistiques': typeof AdminTrashStatistiquesRoute
-  '/app/atsihitany': typeof AppAtsihitanyRoute
+  '/app/atsihitany_client': typeof AppAtsihitany_clientRoute
   '/app/bus': typeof AppBusRoute
   '/app/campagnes': typeof AppCampagnesRoute
   '/app/profil': typeof AppProfilRoute
@@ -214,7 +214,7 @@ export interface FileRoutesByTo {
   '/admin-trash/dashboard': typeof AdminTrashDashboardRoute
   '/admin-trash/signalements': typeof AdminTrashSignalementsRoute
   '/admin-trash/statistiques': typeof AdminTrashStatistiquesRoute
-  '/app/atsihitany': typeof AppAtsihitanyRoute
+  '/app/atsihitany_client': typeof AppAtsihitany_clientRoute
   '/app/bus': typeof AppBusRoute
   '/app/campagnes': typeof AppCampagnesRoute
   '/app/profil': typeof AppProfilRoute
@@ -243,7 +243,7 @@ export interface FileRoutesById {
   '/admin-trash/dashboard': typeof AdminTrashDashboardRoute
   '/admin-trash/signalements': typeof AdminTrashSignalementsRoute
   '/admin-trash/statistiques': typeof AdminTrashStatistiquesRoute
-  '/app/atsihitany': typeof AppAtsihitanyRoute
+  '/app/atsihitany_client': typeof AppAtsihitany_clientRoute
   '/app/bus': typeof AppBusRoute
   '/app/campagnes': typeof AppCampagnesRoute
   '/app/profil': typeof AppProfilRoute
@@ -273,7 +273,7 @@ export interface FileRouteTypes {
     | '/admin-trash/dashboard'
     | '/admin-trash/signalements'
     | '/admin-trash/statistiques'
-    | '/app/atsihitany'
+    | '/app/atsihitany_client'
     | '/app/bus'
     | '/app/campagnes'
     | '/app/profil'
@@ -301,7 +301,7 @@ export interface FileRouteTypes {
     | '/admin-trash/dashboard'
     | '/admin-trash/signalements'
     | '/admin-trash/statistiques'
-    | '/app/atsihitany'
+    | '/app/atsihitany_client'
     | '/app/bus'
     | '/app/campagnes'
     | '/app/profil'
@@ -329,7 +329,7 @@ export interface FileRouteTypes {
     | '/admin-trash/dashboard'
     | '/admin-trash/signalements'
     | '/admin-trash/statistiques'
-    | '/app/atsihitany'
+    | '/app/atsihitany_client'
     | '/app/bus'
     | '/app/campagnes'
     | '/app/profil'
@@ -441,11 +441,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppBusRouteImport
       parentRoute: typeof AppRoute
     }
-    '/app/atsihitany': {
-      id: '/app/atsihitany'
-      path: '/atsihitany'
-      fullPath: '/app/atsihitany'
-      preLoaderRoute: typeof AppAtsihitanyRouteImport
+    '/app/atsihitany_client': {
+      id: '/app/atsihitany_client'
+      path: '/atsihitany_client'
+      fullPath: '/app/atsihitany_client'
+      preLoaderRoute: typeof AppAtsihitany_clientRouteImport
       parentRoute: typeof AppRoute
     }
     '/admin-trash/statistiques': {
@@ -580,7 +580,7 @@ const AdminTrashRouteWithChildren = AdminTrashRoute._addFileChildren(
 )
 
 interface AppRouteChildren {
-  AppAtsihitanyRoute: typeof AppAtsihitanyRoute
+  AppAtsihitany_clientRoute: typeof AppAtsihitany_clientRoute
   AppBusRoute: typeof AppBusRoute
   AppCampagnesRoute: typeof AppCampagnesRoute
   AppProfilRoute: typeof AppProfilRoute
@@ -588,7 +588,7 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
-  AppAtsihitanyRoute: AppAtsihitanyRoute,
+  AppAtsihitany_clientRoute: AppAtsihitany_clientRoute,
   AppBusRoute: AppBusRoute,
   AppCampagnesRoute: AppCampagnesRoute,
   AppProfilRoute: AppProfilRoute,

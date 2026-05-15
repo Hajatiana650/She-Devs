@@ -8,7 +8,8 @@ import {
   LogOut, 
   Sparkles,
   Trash2,
-  ChevronRight
+  ChevronRight,
+  MessageCircle
 } from "lucide-react";
 import { useEffect } from "react";
 import { useAuth } from "@/lib/auth";
@@ -24,6 +25,7 @@ const items = [
   { to: "/admin-trash/calendrier", label: "Calendrier collecte", icon: Calendar },
   { to: "/admin-trash/campagnes", label: "Campagnes", icon: Megaphone },
   { to: "/admin-trash/statistiques", label: "Statistiques", icon: BarChart3 },
+  { to: "/admin-trash/atsihitany", label: "Atsihitany", icon: MessageCircle },
 ];
 
 function AdminTrashLayout() {
